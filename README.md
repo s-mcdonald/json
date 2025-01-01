@@ -103,8 +103,7 @@ class User implements JsonSerializable
 This feature is currently in development gives the ability to deserialize back to an object.
 As long as the class you want to instantiate implements JsonSerializable interface, and the JSON property is mapped to the PHP property, you can instantiate any class from any JSON.
 
-By default Json will only serialize objects, to deserialize the Json back to
-an object you need to pass `deserialize: true` in the attribute.
+By default Json will only serialize values, if you want to deserialize (HYDRATE) the Json back to an object you need to pass `deserialize: true` in the attribute.
 
 ```json
 {
@@ -135,7 +134,7 @@ class NewClassType implements JsonSerializable
    
 }
 ```
-The `NewClassType` will instantiate the object without $phoneNumbers being set.
+The `NewClassType` will instantiate the object without `$phoneNumbers` being set.
 
 
 ## Promoted Constructor property attributes
