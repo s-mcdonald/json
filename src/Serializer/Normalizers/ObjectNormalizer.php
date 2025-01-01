@@ -59,7 +59,12 @@ final readonly class ObjectNormalizer
         }
 
         if (false === $context->getReflectionItem()->isInitialized($context->getOriginalObject())) {
-            return;
+            throw new JsonSerializableException(
+                sprintf(
+                    'Value not initialized: %s',
+                    $context->getPropertyName(),
+                ),
+            );
         }
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());

@@ -16,5 +16,7 @@ class GoodChildObjectSerializable implements JsonSerializable
     }
 
     #[JsonProperty('childProp2')]
-    public string $childProperty2;
+    public GoodChildObjectSerializable|null $childProperty2 = null;
+
+    public string $childProperty3;
 }

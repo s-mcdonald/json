@@ -7,30 +7,44 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
+use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\BadPropertyNamesSerializable;
+use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithMethodAndConstructor;
+use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ParentClassSerializable;
 
 class SerializerTest extends TestCase
 {
-    public function testSerializeWithUninitializedValues(): void
+    public function testSimpleSerializeWithUninitializedCausesException(): void
     {
-        $sut = new ParentClassSerializable();
+        $this->expectException(JsonSerializableException::class);
+        $this->expectExceptionMessage('Value not initialized');
+
+        $sut = new ClassWithPublicStringProperty();
+
+        Json::serialize($sut);
+    }
+
+    public function testSimpleSerialize(): void
+    {
+        $sut = new ClassWithPublicStringProperty();
+        $sut->name = 'bar';
 
         static::assertEquals(
-            '{"creditCard":null}',
+            '{"name":"bar"}',
             Json::serialize($sut),
         );
     }
 
     public function testSerialize(): void
     {
-        $sut = new ParentClassSerializable();
+        $sut = new ClassWithMethodAndConstructor(1234);
         $sut->name = 'foo';
         $sut->phoneNumbers = ['1234', '5678'];
 
         static::assertEquals(
-            '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":null}',
+            '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":1234}',
             Json::serialize($sut),
         );
     }
@@ -51,17 +65,58 @@ class SerializerTest extends TestCase
 
     public function testSerializeWithChildClass(): void
     {
-        $sut = new ParentClassSerializable();
+        $sut = new ParentClassSerializable(123, '123 Fake Address');
         $sut->name = 'foo';
+        $sut->phoneNumbers = [1234, 5678];
         $sut->child = new GoodChildObjectSerializable("fubar");
 
         $expectedJson = <<<JSON
 {
     "userName": "foo",
+    "phoneNumbers": [
+        1234,
+        5678
+    ],
     "child": {
-        "childProp1": "fubar"
+        "childProp1": "fubar",
+        "childProp2": null
     },
-    "creditCard": null
+    "userAddress": "123 Fake Address",
+    "creditCard": 123
+}
+JSON
+            ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testDeepNestingSerialize(): void
+    {
+        $sut = new ParentClassSerializable(123, '123 Fake Address');
+        $sut->name = 'foo';
+        $sut->phoneNumbers = [1234, 5678];
+        $sut->child = new GoodChildObjectSerializable("fubar");
+        $sut->child->childProperty2 = new GoodChildObjectSerializable("deep in the woods");
+
+        $expectedJson = <<<JSON
+{
+    "userName": "foo",
+    "phoneNumbers": [
+        1234,
+        5678
+    ],
+    "child": {
+        "childProp1": "fubar",
+        "childProp2": {
+            "childProp1": "deep in the woods",
+            "childProp2": null
+        }
+    },
+    "userAddress": "123 Fake Address",
+    "creditCard": 123
 }
 JSON
             ;
