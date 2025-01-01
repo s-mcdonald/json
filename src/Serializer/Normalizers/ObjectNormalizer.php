@@ -15,14 +15,11 @@ use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use stdClass;
 use TypeError;
 
-final class ObjectNormalizer
+final readonly class ObjectNormalizer
 {
     public function __construct(
-        private JsonPropertyReader|null $propertyReader = null,
+        private JsonPropertyReader $propertyReader,
     ) {
-        if (null === $this->propertyReader) {
-            $this->propertyReader = new JsonPropertyReader();
-        }
     }
 
     /**
