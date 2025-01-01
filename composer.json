@@ -1,7 +1,7 @@
 {
     "name": "s-mcdonald/json",
-    "description": "Jason Library for serializing and deserializing Json.",
-    "version": "0.0.1",
+    "description": "A modern PHP JSON Object Serialization Library Using Attributes",
+    "version": "0.0.2",
     "type": "project",
     "license": "MIT",
     "minimum-stability": "stable",
