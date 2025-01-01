@@ -35,13 +35,16 @@ class SerializerTest extends TestCase
         );
     }
 
+    /**
+     * When a bad name is presented default to the property name.
+     */
     public function testSerializeWithBadPropertyNames(): void
     {
         $sut = new BadPropertyNamesSerializable();
         $sut->name = 'foo';
 
         static::assertEquals(
-            '{"user Name":"foo"}',
+            '{"name":"foo"}',
             Json::serialize($sut),
         );
     }

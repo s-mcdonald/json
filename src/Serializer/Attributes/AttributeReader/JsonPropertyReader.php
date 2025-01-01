@@ -53,6 +53,12 @@ class JsonPropertyReader
     {
         $args = $attribute->getArguments();
 
-        return $args[0] ?? $args['name'] ?? $defaultName;
+        $newName = $args[0] ?? $args['name'] ?? null;
+
+        if (null === $newName || '' === $newName || str_contains($newName, ' ')) {
+            return $defaultName;
+        }
+
+        return $newName;
     }
 }
