@@ -27,18 +27,12 @@ class User implements JsonSerializable
 
     #[JsonProperty]
     public array $phoneNumbers;    
-
-    // serialization of value comes from the method
-    // below. For deserialization, this value
-    // will not be mapped back.       
+    
     private int $creditCard;
    
     #[JsonProperty('userAddress', deserialize: true)]
     private string $address;
 
-    // This is a one way serializable action since its from
-    // a getter. If we pass deserialize: true, then
-    // a JsonSerializableException will occur.
     #[JsonProperty('creditCard')]
     public function getCreditCard(): int
     {
@@ -70,6 +64,77 @@ Which will produce the following.
     "userAddress": "123 Fake St Arizona."
 }
 ```
+
+# Promoted Constructor property attributes
+Json allows for attributes on the promoted properties.
+
+```php
+
+class MyClass implements JsonSerializable
+{
+    public function __construct(
+        #[JsonProperty('childProp1')]
+        private string $childProperty1,
+    ){
+    }
+}
+```
+
+
+# Nesting and Sub Class Serialization.
+
+Given the below classes, Json will serialize them into a single Json output with class nesting.
+
+```php
+class ParentClass implements JsonSerializable
+{
+    #[JsonProperty('userName')]
+    public string $name;
+
+    #[JsonProperty('child')]
+    public GoodChildObjectSerializable $child;
+}
+
+class ChildClass implements JsonSerializable
+{
+    public function __construct(
+        #[JsonProperty('childProp1')]
+        private string $childProperty1,
+    ){
+    }
+}
+```
+If we initialize some values..
+
+```php
+$sut = new ParentClass();
+$sut->name = 'foo';
+$sut->child = new ChildClass("fubar");
+```
+And the output would be
+
+```json
+{
+    "userName": "foo",
+    "child": {
+        "childProp1": "fubar"
+    }
+}
+```
+
+# Deserialize back to object
+Currently in development is the ability to deserialize back to an object.
+As long as the class you want to instantiate implements JsonSerializable, and the json properties are mapped to property values or constructor properties, you can instantiate any class not just the original class type that it was serialized from.
+
+```php
+$originalClass = new OriginalClass();
+
+$json = Json::serialize($origalClass);
+$object = Json::deserialize($json, NewClassType::class);
+```
+The JsonProperty attribute has additional arguments to handle
+deserialization targets.
+
 
 <a name="installation"></a>
 ## Installation
