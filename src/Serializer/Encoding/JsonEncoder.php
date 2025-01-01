@@ -12,6 +12,9 @@ use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 
 readonly class JsonEncoder implements EncoderInterface
 {
+    /**
+     * $depth - this should also be on the encode, perhaps we introduce a config?
+     */
     public function __construct(
         private JsonValidatorInterface $validator,
         private int $depth = 512,
