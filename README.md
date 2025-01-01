@@ -6,9 +6,11 @@
 
 _A modern PHP JSON Object Serialization Library._
 
-This project library aims to aid in Serializing PHP Objects/Classes using attributes.
-We use attributes so we can enforce rules, and have clear guide, control and 
-visibility as to which values get serialized.
+This library enables the Serializing of PHP Objects/Classes. It also contains utility features for working with JSON structures.
+
+Attributes are the default mechanism to map POPO fields to and from JSON for Serialization as they allow for quick and robust implementation.
+
+While attributes are the default way to map fields in PHPJson. This library allows for the use of a JSON configuration file to be passed to the serializer as an alternative method. 
 
 
 ## Documentation
