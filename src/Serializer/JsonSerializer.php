@@ -90,12 +90,28 @@ class JsonSerializer
         }
     }
 
+    private function serializeMethods(
+        JsonSerializable $originalObject,
+        stdClass $classObject,
+    ): void {
+        // WIP
+    }
+
     /**
      * @return array<ReflectionProperty>
      */
     private function getReflectionProperties(JsonSerializable $originalObject): array
     {
         return (new ReflectionObject($originalObject))->getProperties(
+            ReflectionProperty::IS_PUBLIC |
+            ReflectionProperty::IS_PROTECTED |
+            ReflectionProperty::IS_PRIVATE,
+        );
+    }
+
+    private function getReflectionMethods(JsonSerializable $originalObject): array
+    {
+        return (new ReflectionObject($originalObject))->getMethods(
             ReflectionProperty::IS_PUBLIC |
             ReflectionProperty::IS_PROTECTED |
             ReflectionProperty::IS_PRIVATE,
