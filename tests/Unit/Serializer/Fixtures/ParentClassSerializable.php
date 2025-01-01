@@ -23,6 +23,9 @@ class ParentClassSerializable implements JsonSerializable
     #[JsonProperty('userAddress', deserialize: true)]
     private string $address;
 
+    #[JsonProperty('child')]
+    public GoodChildObjectSerializable $child;
+
     #[JsonProperty('creditCard')]
     public function getCreditCard(): int
     {
