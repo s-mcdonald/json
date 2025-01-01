@@ -13,18 +13,13 @@ use stdClass;
 
 class JsonSerializer
 {
-    // Allow custom encoders but default to
-    // the libs preferred
     public function __construct(
         private EncoderInterface|null $encoder,
-    )
-    {
-        if ($this->encoder === null) {
+    ) {
+        if (null === $this->encoder) {
             $this->encoder = new JsonEncoder(new JsonValidator());
         }
     }
-
-    private int $jsonSerializeFlags = 0;
 
     public function serialize(Contracts\JsonSerializable $object, JsonFormat $format): string
     {
@@ -33,13 +28,7 @@ class JsonSerializer
 
         $this->serializeProperties($reflectionScope, $object, $classObject);
 
-        if (JsonFormat::Pretty === $format) {
-            $this->jsonSerializeFlags |= JSON_PRETTY_PRINT;
-        }
-
-//        $encoder = new JsonEncoder(new JsonValidator(), flags: $this->jsonSerializeFlags);
-
-        return $this->encoder->encode($classObject)->getBody();
+        return $this->encoder->encode($classObject, $format)->getBody();
     }
 
     private function serializeProperties(

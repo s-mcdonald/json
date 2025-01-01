@@ -8,24 +8,30 @@ use Exception;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncodingResultInterface;
 use SamMcDonald\Json\Serializer\Encoding\Validator\Contracts\JsonValidatorInterface;
+use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 
 readonly class JsonEncoder implements EncoderInterface
 {
     public function __construct(
         private JsonValidatorInterface $validator,
-        private int $flags = 0,
         private int $depth = 512,
     ) {
     }
 
-    public function encode($value): EncodingResultInterface
+    public function encode($value, JsonFormat $format = JsonFormat::Pretty): EncodingResultInterface
     {
+        $flags = 0;
+
         if (false === $this->validator->validate($value)) {
             return new JsonEncodingResult($this->validator->getLastErrorMessage());
         }
 
+        if (JsonFormat::Pretty === $format) {
+            $flags |= JSON_PRETTY_PRINT;
+        }
+
         try {
-            $encoded = json_encode($value, JSON_THROW_ON_ERROR | $this->flags, $this->depth);
+            $encoded = json_encode($value, JSON_THROW_ON_ERROR | $flags, $this->depth);
         } catch (Exception $e) {
             return new JsonEncodingResult($this->validator->getLastErrorMessage());
         }
