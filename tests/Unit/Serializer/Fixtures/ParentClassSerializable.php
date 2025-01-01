@@ -15,19 +15,19 @@ class ParentClassSerializable implements JsonSerializable
     #[JsonProperty]
     public array $phoneNumbers;
 
-    // serialization of value comes from the method
-    // below. For deserialization, this value
-    // will not be mapped back.
-    private int $creditCard;
-
     #[JsonProperty('userAddress', deserialize: true)]
     private string $address;
 
     #[JsonProperty('child')]
     public GoodChildObjectSerializable $child;
 
+    public function __construct(
+        private readonly int|null $creditCard = null,
+    ) {
+    }
+
     #[JsonProperty('creditCard')]
-    public function getCreditCard(): int
+    public function getCreditCard(): int|null
     {
         return $this->creditCard;
     }

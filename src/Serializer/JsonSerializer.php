@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer;
 
+use Exception;
 use ReflectionAttribute;
+use ReflectionMethod;
 use ReflectionObject;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
@@ -34,11 +36,17 @@ class JsonSerializer
 
     public function serialize(JsonSerializable $object, JsonFormat $format): string
     {
+        return $this->encoder->encode($this->serializeJsonSerializableObject($object), $format)->getBody();
+    }
+
+    private function serializeJsonSerializableObject(JsonSerializable $propertyValue): stdClass
+    {
         $classObject = new stdClass();
 
-        $this->serializeProperties($object, $classObject);
+        $this->serializeProperties($propertyValue, $classObject);
+        $this->serializeMethods($propertyValue, $classObject);
 
-        return $this->encoder->encode($classObject, $format)->getBody();
+        return $classObject;
     }
 
     private function serializeProperties(
@@ -65,8 +73,12 @@ class JsonSerializer
             }
 
             // we need at least one of these
+            if (0 === count($jsonPropertyAttributes)) {
+                continue;
+            }
+
             if (1 !== count($jsonPropertyAttributes)) {
-                throw new JsonSerializableException('Must have at least 1 JsonProperty Attribute.');
+                throw new JsonSerializableException('Must have only 1 JsonProperty Attribute.');
             }
 
             $propertyValue = $prop->getValue($originalObject);
@@ -94,7 +106,54 @@ class JsonSerializer
         JsonSerializable $originalObject,
         stdClass $classObject,
     ): void {
-        // WIP
+        foreach ($this->getReflectionMethods($originalObject) as $method) {
+            assert($method instanceof ReflectionMethod);
+            $jsonPropertyAttributes = $method->getAttributes(JsonProperty::class);
+            $propertyName = $this->propertyReader->getJsonPropertyName($method->getName(), $jsonPropertyAttributes);
+
+            // we need at least one of these
+            if (0 === count($jsonPropertyAttributes)) {
+                continue;
+            }
+
+            if (1 !== count($jsonPropertyAttributes)) {
+                throw new JsonSerializableException('Must have only 1 JsonProperty Attribute.');
+            }
+
+            if ($method->isPrivate() || $method->isProtected()) {
+                $method->setAccessible(true);
+            }
+
+            try {
+                $propertyValue = $method->invoke($method->isStatic() ? null : $originalObject);
+            } catch (Exception $e) {
+                $propertyValue = null;
+            }
+
+            if (false === $this->isPropertyOrMethodSerializable($propertyValue, $jsonPropertyAttributes)) {
+                continue;
+            }
+
+            if ($method->getNumberOfRequiredParameters() > 0) {
+                throw new JsonSerializableException(
+                    'Can not associate JsonProperty on a function with required parameters.',
+                );
+            }
+
+            // if the propertyValue is a class of JsonSerializable, and has JsonProperty
+            if ($propertyValue instanceof JsonSerializable) {
+                $classObject->{$propertyName} = $this->serializeJsonSerializableObject($propertyValue);
+                continue;
+            }
+
+            // what did we receive?
+            if (false === is_scalar($propertyValue) && false === is_array($propertyValue)) {
+                continue;
+            }
+
+            // @todo: handle various array values
+            $classObject->{$propertyName} = $propertyValue;
+        }
     }
 
     /**
@@ -109,6 +168,9 @@ class JsonSerializer
         );
     }
 
+    /**
+     * @return array<ReflectionMethod>
+     */
     private function getReflectionMethods(JsonSerializable $originalObject): array
     {
         return (new ReflectionObject($originalObject))->getMethods(
@@ -130,19 +192,13 @@ class JsonSerializer
             return true;
         }
 
-        if ($propertyValue instanceof JsonSerializable && $this->propertyReader->hasJsonPropertyAttributes($attributes)) {
+        if (
+            $propertyValue instanceof JsonSerializable &&
+            $this->propertyReader->hasJsonPropertyAttributes($attributes)
+        ) {
             return true;
         }
 
         return false;
-    }
-
-    private function serializeJsonSerializableObject(JsonSerializable $propertyValue): stdClass
-    {
-        $classObject = new stdClass();
-
-        $this->serializeProperties($propertyValue, $classObject);
-
-        return $classObject;
     }
 }
