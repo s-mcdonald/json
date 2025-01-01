@@ -14,7 +14,7 @@ use stdClass;
 class JsonSerializer
 {
     public function __construct(
-        private EncoderInterface|null $encoder,
+        private EncoderInterface|null $encoder = null,
     ) {
         if (null === $this->encoder) {
             $this->encoder = new JsonEncoder(new JsonValidator());

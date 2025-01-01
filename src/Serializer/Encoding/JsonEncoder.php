@@ -10,6 +10,7 @@ use SamMcDonald\Json\Serializer\Encoding\Contracts\EncodingResultInterface;
 use SamMcDonald\Json\Serializer\Encoding\Validator\Contracts\JsonValidatorInterface;
 use SamMcDonald\Json\Serializer\Encoding\Validator\ValidationMessage;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
+use stdClass;
 
 readonly class JsonEncoder implements EncoderInterface
 {
@@ -22,13 +23,9 @@ readonly class JsonEncoder implements EncoderInterface
     ) {
     }
 
-    public function encode($value, JsonFormat $format = JsonFormat::Pretty): EncodingResultInterface
+    public function encode(stdClass $value, JsonFormat $format = JsonFormat::Pretty): EncodingResultInterface
     {
         $flags = 0;
-
-        if (false === $this->validator->validate($value)) {
-            return new JsonEncodingResult($this->validator->getLastErrorMessage());
-        }
 
         if (JsonFormat::Pretty === $format) {
             $flags |= JSON_PRETTY_PRINT;

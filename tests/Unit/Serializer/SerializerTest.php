@@ -15,7 +15,7 @@ class SerializerTest extends TestCase
         $sut = new ParentClassSerializable();
 
         static::assertEquals(
-            '',
+            '{}',
             Json::serialize($sut),
         );
     }
