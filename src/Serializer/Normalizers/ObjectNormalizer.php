@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Normalizers;
 
 use ReflectionAttribute;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
-use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Serializer\Normalizers\Context\Context;
+use SamMcDonald\Json\Serializer\Normalizers\Context\ContextBuilder;
 use stdClass;
 use TypeError;
 
@@ -31,45 +33,38 @@ final readonly class ObjectNormalizer
     {
         $classObject = new stdClass();
 
+        $contextBuilder = new ContextBuilder($this->propertyReader);
+
         foreach ($this->getReflectionProperties($propertyValue) as $prop) {
             assert($prop instanceof ReflectionProperty);
-            $jsonPropertyAttributes = $prop->getAttributes(JsonProperty::class);
-            $propertyName = $this->propertyReader->getJsonPropertyName($prop->getName(), $jsonPropertyAttributes);
-            $this->processProperty($prop, $propertyValue, $classObject, $jsonPropertyAttributes, $propertyName);
+            $this->processProperty($contextBuilder->build($prop, $propertyValue, $classObject));
         }
 
         foreach ($this->getReflectionMethods($propertyValue) as $method) {
             assert($method instanceof ReflectionMethod);
-            $jsonPropertyAttributes = $method->getAttributes(JsonProperty::class);
-            $propertyName = $this->propertyReader->getJsonPropertyName($method->getName(), $jsonPropertyAttributes);
-            $this->processMethod($method, $propertyValue, $classObject, $jsonPropertyAttributes, $propertyName);
+            $this->processMethod($contextBuilder->build($method, $propertyValue, $classObject));
         }
 
         return $classObject;
     }
 
-    private function processProperty(
-        ReflectionProperty $prop,
-        JsonSerializable $originalObject,
-        stdClass $classObject,
-        $jsonPropertyAttributes,
-        $propertyName,
-    ): void {
-        if (0 === count($jsonPropertyAttributes)) {
+    private function processProperty(Context $context): void
+    {
+        if (0 === count($context->getJsonPropertyAttributes())) {
             return;
         }
 
-        if (count($jsonPropertyAttributes) > 1) {
+        if (count($context->getJsonPropertyAttributes()) > 1) {
             throw new JsonSerializableException('Must have only 1 JsonProperty Attribute.');
         }
 
-        if (false === $prop->isInitialized($originalObject)) {
+        if (false === $context->getReflectionItem()->isInitialized($context->getOriginalObject())) {
             return;
         }
 
-        $propertyValue = $this->getValueFromPropOrMethod($prop, $originalObject);
+        $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $jsonPropertyAttributes)) {
+        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
             return;
         }
 
@@ -81,31 +76,26 @@ final readonly class ObjectNormalizer
         //            return;
         //        }
 
-        $this->assignToStdClass($propertyName, $propertyValue, $classObject);
+        $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
-    private function processMethod(
-        ReflectionMethod $method,
-        JsonSerializable $originalObject,
-        stdClass $classObject,
-        $jsonPropertyAttributes,
-        $propertyName,
-    ): void {
-        if (0 === count($jsonPropertyAttributes)) {
+    private function processMethod(Context $context): void
+    {
+        if (0 === count($context->getJsonPropertyAttributes())) {
             return;
         }
 
-        if (count($jsonPropertyAttributes) > 1) {
+        if (count($context->getJsonPropertyAttributes()) > 1) {
             throw new JsonSerializableException('Must have only 1 JsonProperty Attribute.');
         }
 
-        $propertyValue = $this->getValueFromPropOrMethod($method, $originalObject);
+        $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $jsonPropertyAttributes)) {
+        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
             return;
         }
 
-        if ($method->getNumberOfRequiredParameters() > 0) {
+        if ($context->getReflectionItem()->getNumberOfRequiredParameters() > 0) {
             throw new JsonSerializableException(
                 'Can not associate JsonProperty on a function with required parameters.',
             );
@@ -119,7 +109,7 @@ final readonly class ObjectNormalizer
         //            return;
         //        }
 
-        $this->assignToStdClass($propertyName, $propertyValue, $classObject);
+        $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
     private function assignToStdClass($propertyName, $propertyValue, $classObject): void
@@ -187,17 +177,17 @@ final readonly class ObjectNormalizer
             $reflection->setAccessible(true);
         }
 
-        if ($reflection instanceof ReflectionMethod) {
-            try {
-                $propertyValue = $reflection->invoke($reflection->isStatic() ? null : $originalObject);
-            } catch (TypeError $t) {
-                throw new JsonSerializableException('Value has not been initialized.');
-            }
-
-            return $propertyValue;
+        if (false === ($reflection instanceof ReflectionMethod)) {
+            return $reflection->getValue($reflection->isStatic() ? null : $originalObject);
         }
 
-        $propertyValue = $reflection->getValue($reflection->isStatic() ? null : $originalObject);
+        try {
+            $propertyValue = $reflection->invoke($reflection->isStatic() ? null : $originalObject);
+        } catch (TypeError $t) {
+            throw new JsonSerializableException('Value has not been initialized.');
+        } catch (ReflectionException $e) {
+            throw new JsonSerializableException($e->getMessage());
+        }
 
         return $propertyValue;
     }
