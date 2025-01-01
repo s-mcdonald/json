@@ -36,6 +36,9 @@ class User implements JsonSerializable
     #[JsonProperty('userAddress', deserialize: true)]
     private string $address;
 
+    // This is a one way serializable action since its from
+    // a getter. If we pass deserialize: true, then
+    // a JsonSerializableException will occur.
     #[JsonProperty('creditCard')]
     public function getCreditCard(): int
     {
