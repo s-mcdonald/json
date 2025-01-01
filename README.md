@@ -17,6 +17,12 @@ visibility as to which values get serialized.
 * [Installation](#installation)
 * [Dependencies](#dependencies)
 
+## Whats required to Serialize/UnSerialize
+
+1. add `JsonSerializable` to the class.
+2. add `JsonProperty` attributes to properties, methods or at the class level.
+3. Run the serializer.
+
 
 ## Using the Serializer
 
@@ -33,7 +39,7 @@ echo $serializer->serialize($user);
 ```php
 class User implements JsonSerializable
 {
-    #[JsonProperty('userName')]
+    #[JsonProperty]
     public string $name;
 
     #[JsonProperty]
@@ -44,7 +50,7 @@ class User implements JsonSerializable
 ```
 ```json
 {
-    "userName": "Foo",
+    "name": "Foo",
     "phoneNumbers": [
         "044455444",
         "244755465"
@@ -52,11 +58,29 @@ class User implements JsonSerializable
 }
 ```
 
-## Whats required to Serialize/UnSerialize
+## Override property names
+You can override the property or method names by supplying your own.
+```php
+class User implements JsonSerializable
+{
+    #[JsonProperty('userName')]
+    public string $name;
 
-1. add `JsonSerializable` to the class.
-2. add `JsonProperty` attributes to properties, methods or class level.
-3. Run the serializer.
+    #[JsonProperty('numbers')]
+    public array $phoneNumbers;    
+    
+    private int $creditCard;
+}
+```
+```json
+{
+    "userName": "Foo",
+    "numbers": [
+        "044455444",
+        "244755465"
+    ]
+}
+```
 
 ## Example using methods
 ```php
@@ -75,10 +99,21 @@ class User implements JsonSerializable
 }
 ```
 
-## Deserialize back to PHP Object (HYDRATION)
+## Deserialize (Object Hydration)
 This feature is currently in development gives the ability to deserialize back to an object.
 As long as the class you want to instantiate implements JsonSerializable interface, and the JSON property is mapped to the PHP property, you can instantiate any class from any JSON.
 
+By default Json will only serialize objects, to deserialize the Json back to
+an object you need to pass `deserialize: true` in the attribute.
+
+```json
+{
+    "name": "foo",
+    "phoneNumbers": [
+      "123456"
+    ]
+}
+```
 ```php
 $originalClass = new OriginalClass();
 
@@ -92,7 +127,7 @@ deserialization targets.
 class NewClassType implements JsonSerializable
 {
     // Only this property will be loaded from JSON.
-    #[JsonProperty('userName', deserialize: true)]
+    #[JsonProperty(deserialize: true)]
     public string $name;
 
     #[JsonProperty]
@@ -100,9 +135,7 @@ class NewClassType implements JsonSerializable
    
 }
 ```
-
-By default Json will only serialize objects, to deserialize the Json back to
-an object you need to pass `deserialize: true` in the attribute.
+The `NewClassType` will instantiate the object without $phoneNumbers being set.
 
 
 ## Promoted Constructor property attributes
@@ -112,8 +145,8 @@ Json allows for attributes on the promoted properties.
 class MyClass implements JsonSerializable
 {
     public function __construct(
-        #[JsonProperty('childProp1', deserialize: true)]
-        private string $childProperty1,
+        #[JsonProperty('child', deserialize: true)]
+        private string $childProperty,
     ){
     }
 }
