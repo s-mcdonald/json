@@ -33,7 +33,7 @@ class JsonPropertyReader
 
         foreach ($attributes as $attribute) {
             assert($attribute instanceof ReflectionAttribute);
-            if ($attribute->getName() === JsonProperty::class) {
+            if (JsonProperty::class === $attribute->getName()) {
                 return true;
             }
         }
