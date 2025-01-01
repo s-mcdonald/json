@@ -8,6 +8,7 @@ use Exception;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncodingResultInterface;
 use SamMcDonald\Json\Serializer\Encoding\Validator\Contracts\JsonValidatorInterface;
+use SamMcDonald\Json\Serializer\Encoding\Validator\ValidationMessage;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 
 readonly class JsonEncoder implements EncoderInterface
@@ -40,7 +41,7 @@ readonly class JsonEncoder implements EncoderInterface
         }
 
         if (false === $encoded) {
-            return new JsonEncodingResult('Unknown decode exception');
+            return new JsonEncodingResult(ValidationMessage::UNKNOWN_EXCEPTION);
         }
 
         return new JsonEncodingResult($encoded, isValid: true);
