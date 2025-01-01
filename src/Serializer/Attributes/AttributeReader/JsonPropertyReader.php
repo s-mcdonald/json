@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Attributes\AttributeReader;
 
 use ReflectionAttribute;
+use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
 class JsonPropertyReader
@@ -12,13 +13,13 @@ class JsonPropertyReader
     /**
      * @param array<ReflectionAttribute> $attributes
      */
-    public function getJsonPropertyName(string $existingNameOfMethodOrProperty, array $attributes): string
+    public function getJsonPropertyName(string $defaultPropertyName, array $attributes): string
     {
         if (1 === count($attributes)) {
-            return $this->getPropertyName($attributes[0], $existingNameOfMethodOrProperty);
+            return $this->getPropertyName($attributes[0], $defaultPropertyName);
         }
 
-        return $existingNameOfMethodOrProperty;
+        return $defaultPropertyName;
     }
 
     /**
@@ -31,12 +32,21 @@ class JsonPropertyReader
         }
 
         foreach ($attributes as $attribute) {
-            if ($attribute instanceof JsonProperty) {
+            assert($attribute instanceof ReflectionAttribute);
+            if ($attribute->getName() === JsonProperty::class) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @return array<JsonProperty>
+     */
+    private function getJsonPropertyAttributes(ReflectionProperty $prop): array
+    {
+        return $prop->getAttributes(JsonProperty::class);
     }
 
     private function getPropertyName(ReflectionAttribute $attribute, string $defaultName): string
