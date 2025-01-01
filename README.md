@@ -85,6 +85,14 @@ class MyClass implements JsonSerializable
 
 Given the below classes, Json will serialize them into a single Json output with class nesting.
 
+Take the below code for example:
+
+```php
+$sut = new ParentClass();
+$sut->name = 'foo';
+$sut->child = new ChildClass("fubar");
+```
+
 ```php
 class ParentClass implements JsonSerializable
 {
@@ -104,15 +112,6 @@ class ChildClass implements JsonSerializable
     }
 }
 ```
-If we initialize some values..
-
-```php
-$sut = new ParentClass();
-$sut->name = 'foo';
-$sut->child = new ChildClass("fubar");
-```
-And the output would be
-
 ```json
 {
     "userName": "foo",
@@ -135,6 +134,25 @@ $object = Json::deserialize($json, NewClassType::class);
 The JsonProperty attribute has additional arguments to handle
 deserialization targets.
 
+
+
+# Json properties
+
+The properties on json are defined by the method or property name in
+your PHP code. You can override the names by supplying the json target property name
+
+```php
+class MyClass implements JsonSerializable
+{
+    #[JsonProperty('useAnotherName')]
+    private string $property,
+}
+```
+```json
+{
+    "useAnotherName": "foo"
+}
+```
 
 <a name="installation"></a>
 ## Installation
