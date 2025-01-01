@@ -64,7 +64,7 @@ final readonly class ObjectNormalizer
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        if (false === $this->isSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
             return;
         }
 
@@ -91,7 +91,7 @@ final readonly class ObjectNormalizer
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isPropertyOrMethodSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        if (false === $this->isSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
             return;
         }
 
@@ -150,7 +150,7 @@ final readonly class ObjectNormalizer
     /**
      * @param array<ReflectionAttribute> $attributes
      */
-    private function isPropertyOrMethodSerializable($propertyValue, array $attributes): bool
+    private function isSerializable($propertyValue, array $attributes): bool
     {
         if (
             (null === $propertyValue || is_scalar($propertyValue) || is_array($propertyValue))
