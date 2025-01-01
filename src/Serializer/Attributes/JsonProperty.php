@@ -6,11 +6,11 @@ namespace SamMcDonald\Json\Serializer\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class JsonProperty
 {
     public function __construct(
-        private string|null $name = null,
+        private string|null $name,
         private bool $deserialize = false,
     ) {
     }
