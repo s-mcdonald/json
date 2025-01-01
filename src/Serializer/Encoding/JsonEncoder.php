@@ -32,7 +32,7 @@ readonly class JsonEncoder implements EncoderInterface
         }
 
         try {
-            $encoded = json_encode($value, JSON_THROW_ON_ERROR | $flags, $this->depth);
+            $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING | $flags, $this->depth);
         } catch (Exception $e) {
             return new JsonEncodingResult($this->validator->getLastErrorMessage());
         }
