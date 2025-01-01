@@ -25,14 +25,14 @@ readonly class JsonEncoder implements EncoderInterface
 
     public function encode(stdClass $value, JsonFormat $format = JsonFormat::Pretty): EncodingResultInterface
     {
-        $flags = 0;
+        $flags = JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING;
 
         if (JsonFormat::Pretty === $format) {
             $flags |= JSON_PRETTY_PRINT;
         }
 
         try {
-            $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING | $flags, $this->depth);
+            $encoded = json_encode($value, $flags, $this->depth);
         } catch (Exception $e) {
             return new JsonEncodingResult($this->validator->getLastErrorMessage());
         }
