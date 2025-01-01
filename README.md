@@ -14,21 +14,32 @@ Serialize a class using attributes.
 ### Apply Attributes to Serialize/UnSerialize
 
 1. add `JsonSerializable` to the class.
-2. add `JsonProperty` attributes to methods and properties.
+2. add `JsonProperty` attributes to properties.
+
+By default Json will only serialize data/objects, to deserialize the Json back to
+an object you need to pass `deserialize: true` in the attribute
 
 ```php
 class User implements JsonSerializable
 {
-    #[JsonProperty('userName')]
+    #[JsonProperty('userName', deserialize: true)]
     public string $name;
 
     #[JsonProperty]
-    public array $phoneNumbers;
+    public array $phoneNumbers;    
+
+    // serialization of value comes from the method
+    // below. For deserialization, this value
+    // will not be mapped back.       
+    private int $creditCard;
+   
+    #[JsonProperty('userAddress', deserialize: true)]
+    private string $address;
 
     #[JsonProperty('creditCard')]
     public function getCreditCard(): int
     {
-        $this->creditCard = $credit;
+        return $this->creditCard;
     }
 }
 ```
@@ -53,6 +64,7 @@ Which will produce the following.
         "244755465"
     ],
     "creditCard": 54454.5,
+    "userAddress": "123 Fake St Arizona."
 }
 ```
 
