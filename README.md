@@ -1,10 +1,10 @@
-# Json (A PHP JSON Library)
+# PHPJson
 [![Source](https://img.shields.io/badge/source-S_McDonald-blue.svg)](https://github.com/s-mcdonald/Json)
 [![Source](https://img.shields.io/badge/license-MIT-gold.svg)](https://github.com/s-mcdonald/Json)
 ![PHP Compatibility](https://img.shields.io/badge/php-%3E%3D8.2.0-blue)
 ![Build Status](https://img.shields.io/github/workflow/status/s-mcdonald/json/Tests)
 
-_A modern PHP JSON Object Serialization Library Using Attributes._
+_A modern PHP JSON Object Serialization Library._
 
 This project library aims to aid in Serializing PHP Objects/Classes using attributes.
 We use attributes so we can enforce rules, and have clear guide, control and 
