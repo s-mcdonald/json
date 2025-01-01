@@ -11,6 +11,7 @@ class JsonProperty
 {
     public function __construct(
         private string|null $name = null,
+        private bool $deserialize = false,
     ) {
     }
 }
