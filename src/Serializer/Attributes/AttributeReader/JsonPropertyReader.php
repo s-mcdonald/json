@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Attributes\AttributeReader;
 
 use ReflectionAttribute;
+use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
 class JsonPropertyReader
 {
@@ -18,6 +19,24 @@ class JsonPropertyReader
         }
 
         return $existingNameOfMethodOrProperty;
+    }
+
+    /**
+     * @param array<ReflectionAttribute> $attributes
+     */
+    public function hasJsonPropertyAttributes(array $attributes): bool
+    {
+        if (empty($attributes)) {
+            return false;
+        }
+
+        foreach ($attributes as $attribute) {
+            if ($attribute instanceof JsonProperty) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getPropertyName(ReflectionAttribute $attribute, string $defaultName): string
