@@ -6,7 +6,7 @@ namespace SamMcDonald\Json\Serializer\Encoding\Validator\Contracts;
 
 interface JsonValidatorInterface
 {
-    public function validate(string $json): bool;
+    public function validate(string $json): void;
 
     public function isValid(string $json): bool;
 
