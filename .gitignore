@@ -1,0 +1,38 @@
+# Symfony specific ignores
+
+/.env.local
+/.env.local.php
+/.env.*.local
+/var/
+/vendor/
+
+# Environment variables
+/.env
+
+# IDE and editor configurations
+/.idea
+/.vscode
+
+# System files
+.DS_Store
+
+# Log files
+*.log
+
+# PHPUnit specific ignores
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+# ignore dev and bin
+/dev/.cache
+/dev/.cache/
+/dev/dev/.cache/
+.php-cs-fixer.cache
+/dev/.php-cs-fixer.cache
+
+!/dev/csfixer.php
+/dev/bin/php-cs-fixer
+
+composer.lock

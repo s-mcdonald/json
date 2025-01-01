@@ -1,0 +1,52 @@
+{
+    "name": "s-mcdonald/json",
+    "description": "Jason Library for serializing and deserializing Json.",
+    "version": "0.0.1",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "mockery/mockery": "1.5.1",
+        "phpunit/phpunit": "^9.5",
+        "rector/rector": "1.2.10",
+        "roave/security-advisories": "dev-latest",
+        "squizlabs/php_codesniffer": "3.10.3"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "SamMcDonald\\Json\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SamMcDonald\\Json\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "build": [
+            "composer dumpautoload",
+            "composer update",
+            "composer install",
+            "@clean"
+        ],
+        "clear-cache": "php ./bin/console cache:clear",
+        "clean:csf:check": "./dev/bin/php-cs-fixer check --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
+        "clean:csf:fix": "./dev/bin/php-cs-fixer fix --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
+        "clean": [
+            "@clean:csf:fix"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    }
+}
