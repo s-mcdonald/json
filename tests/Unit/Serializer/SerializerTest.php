@@ -18,7 +18,7 @@ class SerializerTest extends TestCase
         $sut = new ParentClassSerializable();
 
         static::assertEquals(
-            '{}',
+            '{"creditCard":null}',
             Json::serialize($sut),
         );
     }
@@ -30,7 +30,7 @@ class SerializerTest extends TestCase
         $sut->phoneNumbers = ['1234', '5678'];
 
         static::assertEquals(
-            '{"userName":"foo","phoneNumbers":["1234","5678"]}',
+            '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":null}',
             Json::serialize($sut),
         );
     }
@@ -60,7 +60,8 @@ class SerializerTest extends TestCase
     "userName": "foo",
     "child": {
         "childProp1": "fubar"
-    }
+    },
+    "creditCard": null
 }
 JSON
             ;

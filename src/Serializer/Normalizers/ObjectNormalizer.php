@@ -153,7 +153,7 @@ final readonly class ObjectNormalizer
     private function isPropertyOrMethodSerializable($propertyValue, array $attributes): bool
     {
         if (
-            (is_scalar($propertyValue) || is_array($propertyValue))
+            (null === $propertyValue || is_scalar($propertyValue) || is_array($propertyValue))
             && $this->propertyReader->hasJsonPropertyAttributes($attributes)
         ) {
             return true;
