@@ -6,7 +6,9 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
+use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\BadPropertyNamesSerializable;
+use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ParentClassSerializable;
 
 class SerializerTest extends TestCase
@@ -41,6 +43,28 @@ class SerializerTest extends TestCase
         static::assertEquals(
             '{"user Name":"foo"}',
             Json::serialize($sut),
+        );
+    }
+
+    public function testSerializeWithChildClass(): void
+    {
+        $sut = new ParentClassSerializable();
+        $sut->name = 'foo';
+        $sut->child = new GoodChildObjectSerializable("fubar");
+
+        $expectedJson = <<<JSON
+{
+    "userName": "foo",
+    "child": {
+        "childProp1": "fubar"
+    }
+}
+JSON
+            ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
         );
     }
 }
