@@ -29,7 +29,7 @@ class JsonSerializer
 
     public function serialize(JsonSerializable $object, JsonFormat $format): string
     {
-        $jsonBuilder = $this->objectNormalizer->serializeJsonSerializableToStdObject($object);
+        $jsonBuilder = $this->objectNormalizer->normalize($object);
 
         return $this->encoder->encode($jsonBuilder->toStdClass(), $format)->getBody();
     }
