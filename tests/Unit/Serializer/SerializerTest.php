@@ -220,6 +220,7 @@ JSON
 {
     "arrayVal": [
         {
+          "intVal": 123,
           "stringVal": "foo"
         },
         1,
