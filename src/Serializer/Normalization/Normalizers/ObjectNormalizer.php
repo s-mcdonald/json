@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionEnum;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
@@ -12,6 +14,7 @@ use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Contracts\JsonEnum;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
@@ -28,6 +31,10 @@ final readonly class ObjectNormalizer
 
     public function normalize(JsonSerializable $propertyValue): stdClass
     {
+        if ($propertyValue instanceof JsonEnum) {
+            return $this->normalizeEnum($propertyValue);
+        }
+
         return $this->transferToJsonBuilder($propertyValue)->toStdClass();
     }
 
@@ -201,5 +208,20 @@ final readonly class ObjectNormalizer
         }
 
         return $newArray;
+    }
+
+    private function normalizeEnum(JsonEnum $propertyValue): stdClass
+    {
+        $value = $propertyValue->name;
+        $reflectionClass = new ReflectionClass($propertyValue);
+        if ((new ReflectionEnum($propertyValue))->isBacked()) {
+            $value = $propertyValue->value;
+        }
+
+        $builder = new JsonBuilder();
+
+        return $builder
+            ->addProperty($reflectionClass->getShortName(), $value)
+            ->toStdClass();
     }
 }

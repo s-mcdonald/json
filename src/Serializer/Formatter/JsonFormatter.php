@@ -19,13 +19,14 @@ final class JsonFormatter
     private function reEncode(string $json, int $options): string
     {
         $decoded = json_decode($json, true, 512);
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (JSON_ERROR_NONE !== json_last_error()) {
             return $json;
         }
         $encoded = json_encode($decoded, $options);
         if (false === $encoded) {
             return $json;
         }
+
         return $encoded;
     }
 }
