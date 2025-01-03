@@ -30,10 +30,8 @@ final class JsonBuilder implements JsonSerializable
         try {
             return json_decode((string) $this, false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            // suppress
+            return new stdClass();
         }
-
-        return new stdClass();
     }
 
     public function addArrayProperty(string $prop, array $value): self

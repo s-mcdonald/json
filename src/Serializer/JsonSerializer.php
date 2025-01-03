@@ -10,7 +10,7 @@ use SamMcDonald\Json\Serializer\Encoding\Contracts\EncoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\JsonEncoder;
 use SamMcDonald\Json\Serializer\Encoding\Validator\JsonValidator;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
-use SamMcDonald\Json\Serializer\Normalizers\ObjectNormalizer;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\ObjectNormalizer;
 
 class JsonSerializer
 {

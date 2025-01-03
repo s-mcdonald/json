@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Serializer\Normalizers\Context;
+namespace SamMcDonald\Json\Serializer\Normalization\Normalizers\Context;
 
 use ReflectionMethod;
 use ReflectionProperty;

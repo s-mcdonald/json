@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Serializer\Normalizers;
+namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 /**
  * Normalize complex types into simple arrays. Good ol' php.

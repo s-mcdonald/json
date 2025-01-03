@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Serializer\Normalizers;
+namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 use ReflectionAttribute;
 use ReflectionException;
@@ -14,8 +14,8 @@ use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
-use SamMcDonald\Json\Serializer\Normalizers\Context\Context;
-use SamMcDonald\Json\Serializer\Normalizers\Context\ContextBuilder;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
 use TypeError;
 
 /**
@@ -128,7 +128,7 @@ final readonly class ObjectNormalizer
             return;
         }
 
-        match (gettype($propertyValue)) {
+        match (\gettype($propertyValue)) {
             'NULL' => $classObject->addNullProperty($propertyName),
             'boolean' => $classObject->addBooleanProperty($propertyName, $propertyValue),
             'array' => $classObject->addArrayProperty($propertyName, $propertyValue),
