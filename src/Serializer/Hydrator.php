@@ -19,7 +19,7 @@ final class Hydrator
      */
     public function hydrate(object|array $data, string $fqClassName): object
     {
-        if (!class_exists($fqClassName)) {
+        if (false === class_exists($fqClassName)) {
             throw new InvalidArgumentException("The class '$fqClassName' does not exist.");
         }
 
