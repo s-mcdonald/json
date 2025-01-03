@@ -7,6 +7,7 @@ namespace SamMcDonald\Json;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
+use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 use SamMcDonald\Json\Serializer\JsonSerializer;
 
 final class Json
@@ -30,5 +31,15 @@ final class Json
     public static function createJsonBuilder(): JsonBuilder
     {
         return new JsonBuilder();
+    }
+
+    public static function prettify(string $json): string
+    {
+        return (new JsonFormatter())->pretty($json);
+    }
+
+    public static function uglify(string $json): string
+    {
+        return (new JsonFormatter())->ugly($json);
     }
 }
