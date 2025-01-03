@@ -255,6 +255,24 @@ echo Json::createJsonBuilder()
 }
 ```
 
+# Json Formatting
+Prettify or Uglify your json strings
+
+```php
+Json::prettify('{"name":"bar"}')
+```
+```json
+{
+    "name": "bar"
+}
+```
+and then the reverse
+```php
+Json::prettify('{
+    "name": "bar"
+}') // '{"name":"bar"}'
+```
+
 # Reference
 
 <a name="installation"></a>

@@ -16,11 +16,9 @@ use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
+use stdClass;
 use TypeError;
 
-/**
- * rename to JsonSerializableNormalizer.
- */
 final readonly class ObjectNormalizer
 {
     public function __construct(
@@ -28,12 +26,12 @@ final readonly class ObjectNormalizer
     ) {
     }
 
-    /**
-     * Serializes a JsonSerializable object to a StdClass.
-     * This is needed to normalize the values from
-     * your class.
-     */
-    public function normalize(JsonSerializable $propertyValue): JsonBuilder
+    public function normalize(JsonSerializable $propertyValue): stdClass
+    {
+        return $this->transferToJsonBuilder($propertyValue)->toStdClass();
+    }
+
+    private function transferToJsonBuilder(JsonSerializable $propertyValue): JsonBuilder
     {
         $jsonBuilder = new JsonBuilder();
         $contextBuilder = new ContextBuilder($this->propertyReader);
@@ -112,8 +110,7 @@ final readonly class ObjectNormalizer
     private function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
     {
         if ($propertyValue instanceof JsonSerializable) {
-            $jsonBuilder = $this->normalize($propertyValue);
-            $classObject->addProperty($propertyName, $jsonBuilder);
+            $classObject->addProperty($propertyName, $this->transferToJsonBuilder($propertyValue));
 
             return;
         }
@@ -198,7 +195,7 @@ final readonly class ObjectNormalizer
                 is_null($value) => null,
                 is_bool($value), is_scalar($value) => $value,
                 is_array($value) => $this->mapArrayContents($value),
-                $value instanceof JsonSerializable => $this->normalize($value),
+                $value instanceof JsonSerializable => $this->transferToJsonBuilder($value),
                 default => throw new JsonSerializableException('Invalid type in array.'),
             };
         }

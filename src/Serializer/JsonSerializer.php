@@ -36,9 +36,7 @@ class JsonSerializer
 
     public function serialize(JsonSerializable $object, JsonFormat $format): string
     {
-        $jsonBuilder = $this->objectNormalizer->normalize($object);
-
-        return $this->encoder->encode($jsonBuilder->toStdClass(), $format)->getBody();
+        return $this->encoder->encode($this->objectNormalizer->normalize($object), $format)->getBody();
     }
 
     public function deserialize(string $json, string $classFqn)
