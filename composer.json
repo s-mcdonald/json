@@ -1,7 +1,7 @@
 {
     "name": "s-mcdonald/json",
-    "description": "A modern PHP JSON Object Serialization Library Using Attributes",
-    "version": "0.0.3",
+    "description": "A modern PHP JSON Object Serialization Library",
+    "version": "0.0.4",
     "type": "project",
     "license": "MIT",
     "minimum-stability": "stable",
@@ -39,7 +39,6 @@
             "composer install",
             "@clean"
         ],
-        "clear-cache": "php ./bin/console cache:clear",
         "clean:csf:check": "./dev/bin/php-cs-fixer check --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
         "clean:csf:fix": "./dev/bin/php-cs-fixer fix --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
         "clean": [
