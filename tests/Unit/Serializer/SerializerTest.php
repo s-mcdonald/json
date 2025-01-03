@@ -180,14 +180,16 @@ JSON
         $expectedJson = <<<JSON
 {
     "arrayVal": [
-        false, 
-        true, 
-        null, 
-        1, 
-        2, 
+        false,
+        true,
+        null,
+        1,
+        2,
         3,
-        "a",
-        "b"
+        [
+            "a",
+            "b"
+        ]
     ],
     "intVal": 123,
     "stringVal": "foo",
@@ -220,8 +222,9 @@ JSON
 {
     "arrayVal": [
         {
-          "intVal": 123,
-          "stringVal": "foo"
+            "intVal": 123,
+            "stringVal": "arrayitem",
+            "objVal": null
         },
         1,
         "fubar",

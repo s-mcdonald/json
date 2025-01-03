@@ -123,17 +123,14 @@ final readonly class ObjectNormalizer
     {
         if ($propertyValue instanceof JsonSerializable) {
             $jsonBuilder = $this->serializeJsonSerializableToStdObject($propertyValue);
-            $classObject->addObjectProperty($propertyName, $jsonBuilder);
+            $classObject->addProperty($propertyName, $jsonBuilder);
 
             return;
         }
 
         match (\gettype($propertyValue)) {
-            'NULL' => $classObject->addNullProperty($propertyName),
-            'boolean' => $classObject->addBooleanProperty($propertyName, $propertyValue),
-            'array' => $classObject->addArrayProperty($propertyName, $propertyValue),
-            'string' => $classObject->addStringProperty($propertyName, $propertyValue),
-            'integer', 'double' => $classObject->addNumericProperty($propertyName, $propertyValue),
+            'NULL' => $classObject->addProperty($propertyName, null),
+            'boolean', 'array', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
             default => throw new JsonSerializableException('Invalid type.'),
         };
     }

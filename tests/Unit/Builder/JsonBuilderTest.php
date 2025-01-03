@@ -20,9 +20,9 @@ class JsonBuilderTest extends TestCase
 }
 JSON;
 
-        $sut->addObjectProperty(
+        $sut->addProperty(
             "foo",
-            $this->createBuilder()->addStringProperty("abc", "def")
+            $this->createBuilder()->addProperty("abc", "def")
         );
 
         self::assertEquals(
@@ -43,7 +43,7 @@ JSON;
 }
 JSON;
 
-        $sut->addArrayProperty("foo", ["bar"]);
+        $sut->addProperty("foo", ["bar"]);
 
         self::assertEquals(
             $expected,
@@ -61,7 +61,7 @@ JSON;
 }
 JSON;
 
-        $sut->addStringProperty("foo", "bar");
+        $sut->addProperty("foo", "bar");
 
         self::assertEquals(
             $expected,
@@ -79,7 +79,7 @@ JSON;
 }
 JSON;
 
-        $sut->addBooleanProperty("foo", true);
+        $sut->addProperty("foo", true);
 
         self::assertEquals(
             $expected,
@@ -97,7 +97,7 @@ JSON;
 }
 JSON;
 
-        $sut->addNumericProperty("foo", 12345.678);
+        $sut->addProperty("foo", 12345.678);
 
         self::assertEquals(
             $expected,
@@ -116,8 +116,8 @@ JSON;
 }
 JSON;
 
-        $sut->addNumericProperty("foo", 12345.678);
-        $sut->addNullProperty("bar");
+        $sut->addProperty("foo", 12345.678);
+        $sut->addProperty("bar", null);
 
         self::assertEquals(
             $expected,
