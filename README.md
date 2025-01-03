@@ -215,6 +215,23 @@ class MyUser
 }
 ```
 
+# Serialize Enums (including backed enums)
+
+```php
+enum Status 
+{
+    case Enabled;
+    case Disabled;
+}
+
+echo Json::serialize(Status::Enabled);
+```
+```json
+{
+    "Status": "Enabled"
+}
+```
+
 
 # JsonBuilder
 Fluently create Json objects using PHP.
