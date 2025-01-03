@@ -2,7 +2,8 @@
 [![Source](https://img.shields.io/badge/source-S_McDonald-blue.svg)](https://github.com/s-mcdonald/Json)
 [![Source](https://img.shields.io/badge/license-MIT-gold.svg)](https://github.com/s-mcdonald/Json)
 ![PHP Compatibility](https://img.shields.io/badge/php-%3E%3D8.2.0-blue)
-![Build Status](https://img.shields.io/github/workflow/status/s-mcdonald/json/Tests)
+![Build Status](https://img.shields.io/github/actions/workflow/status/s-mcdonald/phpjson/php.yml?branch=master)
+![Build Status](https://img.shields.io/github/actions/workflow/status/s-mcdonald/phpjson/php.yml?branch=develop)
 
 _A Fast and Lightweight PHP JSON Object Serialization Library._
 
