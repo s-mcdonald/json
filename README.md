@@ -201,17 +201,17 @@ Fluently create Json objects using PHP.
 ```php
 
 echo Json::createJsonBuilder()
-        ->addNumericProperty('id', 11)
-        ->addStringProperty('title', "Perfume Oil")
-        ->addNumericProperty('rating', 4.26)
-        ->addNumericProperty('stock', 65)
-        ->addObjectProperty(
+        ->addProperty('id', 11)
+        ->addProperty('title', "Perfume Oil")
+        ->addProperty('rating', 4.26)
+        ->addProperty('stock', 65)
+        ->addProperty(
             'thumbnail',
             Json::createJsonBuilder()
-                ->addStringProperty("url", "https://i.dummyjson.com/data/products/11/thumbnail.jpg")
-                ->addStringProperty("title", "thumbnail.jpg")
+                ->addProperty("url", "https://i.dummyjson.com/data/products/11/thumbnail.jpg")
+                ->addProperty("title", "thumbnail.jpg")
         )
-        ->addArrayProperty("images", [
+        ->addProperty("images", [
             "https://i.dummyjson.com/data/products/11/1.jpg",
             "https://i.dummyjson.com/data/products/11/2.jpg"
         ])
