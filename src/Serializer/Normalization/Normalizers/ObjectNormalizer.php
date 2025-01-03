@@ -81,10 +81,6 @@ final readonly class ObjectNormalizer
             return;
         }
 
-        if (is_array($propertyValue)) {
-            $propertyValue = $this->mapArrayContents($propertyValue);
-        }
-
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
@@ -110,10 +106,6 @@ final readonly class ObjectNormalizer
             );
         }
 
-        if (is_array($propertyValue)) {
-            $propertyValue = $this->mapArrayContents($propertyValue);
-        }
-
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
@@ -127,8 +119,8 @@ final readonly class ObjectNormalizer
         }
 
         match (\gettype($propertyValue)) {
-            'NULL' => $classObject->addProperty($propertyName, null),
-            'boolean', 'array', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
+            'array' => $classObject->addProperty($propertyName, $this->mapArrayContents($propertyValue)),
+            'NULL', 'boolean', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
             default => throw new JsonSerializableException('Invalid type.'),
         };
     }
