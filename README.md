@@ -9,7 +9,7 @@ _A modern PHP JSON Object Serialization Library._
 ## 💖 Support This Project
 This project is supported by your donations! Click the **[Sponsor](https://github.com/sponsors/s-mcdonald)** link to display funding options.
 
-
+___
 
 
 This library enables the Serializing of PHP Objects/Classes. It also contains utility features for working with JSON structures.
@@ -107,43 +107,6 @@ class User implements JsonSerializable
 }
 ```
 
-## Deserialize (Object Hydration)
-This feature is currently in development gives the ability to deserialize back to an object.
-As long as the class you want to instantiate implements JsonSerializable interface, and the JSON property is mapped to the PHP property, you can instantiate any class from any JSON.
-
-By default Json will only serialize values, if you want to deserialize (HYDRATE) the Json back to an object you need to pass `deserialize: true` in the attribute.
-
-```json
-{
-    "name": "foo",
-    "phoneNumbers": [
-      "123456"
-    ]
-}
-```
-```php
-$originalClass = new OriginalClass();
-
-$json = Json::serialize($origalClass);
-$object = Json::deserialize($json, NewClassType::class);
-```
-The JsonProperty attribute has additional arguments to handle
-deserialization targets.
-
-```php
-class NewClassType implements JsonSerializable
-{
-    // Only this property will be loaded from JSON.
-    #[JsonProperty(deserialize: true)]
-    public string $name;
-
-    #[JsonProperty]
-    public array $phoneNumbers;    
-   
-}
-```
-The `NewClassType` will instantiate the object without `$phoneNumbers` being set.
-
 
 ## Promoted Constructor property attributes
 Json allows for attributes on the promoted properties.
@@ -197,6 +160,38 @@ class ChildClass implements JsonSerializable
     "child": {
         "childProp": "bar"
     }
+}
+```
+
+## Deserialize (Object Hydration)
+For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, PHPJson will hydrate your class or entity.
+
+```json
+{
+  "name": "Freddy",
+  "age": 35,
+  "isActive": true
+}
+```
+```php
+$myUser = Json::deserialize($json, MyUser::class);
+```
+```
+YourNamespace\MyUser Object (
+    'name' => 'Freddy'
+    'age' => 35
+    'isActive' => true
+)
+```
+
+The JsonProperty attribute has additional arguments to handle
+deserialization targets. This will allow you to map to a field with a different property name.
+
+```php
+class NewClassType 
+{
+    #[JsonProperty('name')]
+    public string $userName;
 }
 ```
 

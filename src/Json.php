@@ -6,10 +6,8 @@ namespace SamMcDonald\Json;
 
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
-use SamMcDonald\Json\Serializer\Encoding\JsonDecoder;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\JsonSerializer;
-use stdClass;
 
 final class Json
 {
@@ -24,15 +22,9 @@ final class Json
         return (new JsonSerializer())->serialize($object, $format);
     }
 
-    // @todo: WIP
-    public static function deserialize(string $json, string $classFqn): stdClass
+    public static function deserialize(string $json, string $classFqn): mixed
     {
-        // @todo: create the decoder - for now use basic decoder
-        return (new JsonDecoder())->decode($json, $classFqn);
-        // Step 1 - Ensure $classFqn is valid type
-        // Step 2 - create a map
-        // Step 3 - decode to stdClass
-        // Step 4 - invoke/ move data to new entity.
+        return (new JsonSerializer())->deserialize($json, $classFqn);
     }
 
     public static function createJsonBuilder(): JsonBuilder

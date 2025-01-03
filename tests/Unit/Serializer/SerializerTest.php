@@ -14,6 +14,7 @@ use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringPropert
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\Nestable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\NestableWithArray;
+use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NoAttributeClasses\SimpleScalaProperties;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ParentClassSerializable;
 
 class SerializerTest extends TestCase
@@ -252,6 +253,28 @@ JSON
         static::assertEquals(
             $expectedJson,
             Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testSimpleHydration(): void
+    {
+        $expected = new SimpleScalaProperties();
+        $expected->name = 'Freddy';
+        $expected->age = 35;
+        $expected->isActive = true;
+
+        $json = <<<JSON
+{
+  "name": "Freddy", 
+  "age": 35, 
+  "isActive": true
+}
+JSON
+            ;
+
+        static::assertEquals(
+            $expected,
+            Json::deserialize($json, SimpleScalaProperties::class),
         );
     }
 }

@@ -17,7 +17,7 @@ class DecodingTest extends TestCase
         $deserializedObject = Json::deserialize($json, ClassWithPublicStringProperty::class);
 
         static::assertInstanceOf(
-            stdClass::class,
+            ClassWithPublicStringProperty::class,
             $deserializedObject,
         );
 
