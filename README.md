@@ -4,7 +4,7 @@
 ![PHP Compatibility](https://img.shields.io/badge/php-%3E%3D8.2.0-blue)
 ![Build Status](https://img.shields.io/github/workflow/status/s-mcdonald/json/Tests)
 
-_A modern PHP JSON Object Serialization Library._
+_A Fast and Lightweight PHP JSON Object Serialization Library._
 
 ## 💖 Support This Project
 This project is supported by your donations! Click the **[Sponsor](https://github.com/sponsors/s-mcdonald)** link to display funding options.
@@ -24,6 +24,8 @@ While attributes are the default way to map fields in PHPJson. This library allo
 * [Usage](#Usage)
 * [Installation](#installation)
 * [Dependencies](#dependencies)
+
+# Serialization
 
 ## Whats required to Serialize/UnSerialize
 
@@ -250,6 +252,8 @@ echo Json::createJsonBuilder()
      ]
 }
 ```
+
+# Reference
 
 <a name="installation"></a>
 ## Installation
