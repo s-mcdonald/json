@@ -257,7 +257,7 @@ echo Json::createJsonBuilder()
 Via Composer. Run the following command from your project's root.
 
 ```
-composer require s-mcdonald/json
+composer require s-mcdonald/phpjson
 ```
 
 <a name="dependencies"></a>
