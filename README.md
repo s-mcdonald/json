@@ -163,9 +163,21 @@ class ChildClass implements JsonSerializable
 }
 ```
 
+
 ## Deserialize (Object Hydration)
 For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, PHPJson will hydrate your class or entity.
 
+#### PHP
+```php
+class MyUser 
+{
+    public string $name;
+    public int $age;
+    public bool $isActive;
+}
+```
+
+#### JSON
 ```json
 {
   "name": "Freddy",
@@ -173,6 +185,7 @@ For simple Hydration, you do not need to implement any attributes or have a mapp
   "isActive": true
 }
 ```
+#### JSON
 ```php
 $myUser = Json::deserialize($json, MyUser::class);
 ```
@@ -188,10 +201,13 @@ The JsonProperty attribute has additional arguments to handle
 deserialization targets. This will allow you to map to a field with a different property name.
 
 ```php
-class NewClassType 
+class MyUser 
 {
     #[JsonProperty('name')]
     public string $userName;
+
+    public int $age;
+    public bool $isActive;
 }
 ```
 
