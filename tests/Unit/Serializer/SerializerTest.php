@@ -6,8 +6,6 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
-use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\BadPropertyNamesSerializable;
@@ -15,6 +13,7 @@ use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithMethodAndConstructo
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\Nestable;
+use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\NestableWithArray;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ParentClassSerializable;
 
 class SerializerTest extends TestCase
@@ -159,6 +158,86 @@ JSON
                     "stringVal": "foo",
                     "objVal": null
                 }
+            }
+        }
+    }
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testWithArrays(): void
+    {
+        $sut = new NestableWithArray();
+
+        $sut->arrayVal = [false, true, null, 1, 2, 3, ["a", "b"]];
+
+        $expectedJson = <<<JSON
+{
+    "arrayVal": [
+        false, 
+        true, 
+        null, 
+        1, 
+        2, 
+        3,
+        "a",
+        "b"
+    ],
+    "intVal": 123,
+    "stringVal": "foo",
+    "objVal": null
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testNestingWithArrays(): void
+    {
+        $sut = new NestableWithArray();
+
+        $nestA = new Nestable();
+        $nestA->stringVal = "arrayitem";
+
+        $sut->arrayVal = [$nestA, 1, "fubar", true];
+
+        $sut->objVal = new Nestable();
+        $sut->objVal->intVal = 456;
+        $sut->objVal->objVal = new Nestable();
+        $sut->objVal->objVal->objVal = new Nestable();
+
+        $expectedJson = <<<JSON
+{
+    "arrayVal": [
+        {
+          "stringVal": "foo"
+        },
+        1,
+        "fubar",
+        true
+    ],
+    "intVal": 123,
+    "stringVal": "foo",
+    "objVal": {
+        "intVal": 456,
+        "stringVal": "foo",
+        "objVal": {
+            "intVal": 123,
+            "stringVal": "foo",
+            "objVal": {
+                "intVal": 123,
+                "stringVal": "foo",
+                "objVal": null
             }
         }
     }

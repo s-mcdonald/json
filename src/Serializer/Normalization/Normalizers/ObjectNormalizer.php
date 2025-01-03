@@ -208,10 +208,10 @@ final readonly class ObjectNormalizer
         $newArray = [];
         foreach ($array as $value) {
             $newArray[] = match (true) {
-                $value instanceof JsonSerializable => $this->serializeJsonSerializableToStdObject($value),
                 is_null($value) => null,
-                is_scalar($value) => $value,
+                is_bool($value), is_scalar($value) => $value,
                 is_array($value) => $this->mapArrayContents($value),
+                $value instanceof JsonSerializable => $this->serializeJsonSerializableToStdObject($value),
                 default => throw new JsonSerializableException('Invalid type in array.'),
             };
         }
