@@ -6,21 +6,21 @@ namespace SamMcDonald\Json\Serializer\Normalizers\Context;
 
 use ReflectionMethod;
 use ReflectionProperty;
+use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
-use stdClass;
 
 readonly class Context
 {
     public function __construct(
         private ReflectionProperty|ReflectionMethod $reflectionItem,
         private JsonSerializable $originalObject,
-        private stdClass $classObject,
+        private JsonBuilder $classObject,
         private array $jsonPropertyAttributes,
         private string $propertyName,
     ) {
     }
 
-    public function getJsonPropertyAttributes(): mixed
+    public function getJsonPropertyAttributes(): array
     {
         return $this->jsonPropertyAttributes;
     }
@@ -35,7 +35,7 @@ readonly class Context
         return $this->originalObject;
     }
 
-    public function getClassObject(): stdClass
+    public function getClassObject(): JsonBuilder
     {
         return $this->classObject;
     }

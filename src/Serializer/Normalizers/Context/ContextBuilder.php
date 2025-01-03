@@ -6,8 +6,10 @@ namespace SamMcDonald\Json\Serializer\Normalizers\Context;
 
 use ReflectionMethod;
 use ReflectionProperty;
+use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 
 readonly class ContextBuilder
 {
@@ -18,8 +20,8 @@ readonly class ContextBuilder
 
     public function build(
         ReflectionProperty|ReflectionMethod $prop,
-        $originalObject,
-        $classObject,
+        JsonSerializable $originalObject,
+        JsonBuilder $classObject,
     ): Context {
         $jsonPropertyAttributes = $prop->getAttributes(JsonProperty::class);
         $propertyName = $this->propertyReader->getJsonPropertyName($prop->getName(), $jsonPropertyAttributes);

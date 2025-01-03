@@ -8,6 +8,14 @@ use ReflectionAttribute;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
+/**
+ * This class needs a lot more work. Its working for now in its current purpose but definitely not
+ * multipurpose. The reader needs to accept a source, and the public methods to
+ * iterate and return values.
+ *
+ * Its current implementation is more like a helper, but we should not be
+ * writing code like this!
+ */
 class JsonPropertyReader
 {
     /**

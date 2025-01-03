@@ -9,14 +9,18 @@ use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionProperty;
+use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
+use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalizers\Context\ContextBuilder;
-use stdClass;
 use TypeError;
 
+/**
+ * rename to JsonSerializableNormalizer.
+ */
 final readonly class ObjectNormalizer
 {
     public function __construct(
@@ -28,24 +32,25 @@ final readonly class ObjectNormalizer
      * Serializes a JsonSerializable object to a StdClass.
      * This is needed to normalize the values from
      * your class.
+     *
+     * @todo: rename to normalize()!
      */
-    public function serializeJsonSerializableToStdObject(JsonSerializable $propertyValue): stdClass
+    public function serializeJsonSerializableToStdObject(JsonSerializable $propertyValue): JsonBuilder
     {
-        $classObject = new stdClass();
-
+        $jsonBuilder = new JsonBuilder();
         $contextBuilder = new ContextBuilder($this->propertyReader);
 
         foreach ($this->getReflectionProperties($propertyValue) as $prop) {
             assert($prop instanceof ReflectionProperty);
-            $this->processProperty($contextBuilder->build($prop, $propertyValue, $classObject));
+            $this->processProperty($contextBuilder->build($prop, $propertyValue, $jsonBuilder));
         }
 
         foreach ($this->getReflectionMethods($propertyValue) as $method) {
             assert($method instanceof ReflectionMethod);
-            $this->processMethod($contextBuilder->build($method, $propertyValue, $classObject));
+            $this->processMethod($contextBuilder->build($method, $propertyValue, $jsonBuilder));
         }
 
-        return $classObject;
+        return $jsonBuilder;
     }
 
     private function processProperty(Context $context): void
@@ -55,7 +60,12 @@ final readonly class ObjectNormalizer
         }
 
         if (count($context->getJsonPropertyAttributes()) > 1) {
-            throw new JsonSerializableException('Must have only 1 JsonProperty Attribute.');
+            throw new JsonSerializableException(
+                sprintf(
+                    'Must have only 1 %s Attribute.',
+                    JsonProperty::class,
+                ),
+            );
         }
 
         if (false === $context->getReflectionItem()->isInitialized($context->getOriginalObject())) {
@@ -73,13 +83,9 @@ final readonly class ObjectNormalizer
             return;
         }
 
-        // what did we receive?
-        //        if (
-        //            !($propertyValue instanceof JsonSerializable) &&
-        //            false === is_scalar($propertyValue) && false === is_array($propertyValue)
-        //        ) {
-        //            return;
-        //        }
+        if (is_array($propertyValue)) {
+            $propertyValue = $this->mapArrayContents($propertyValue);
+        }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
@@ -106,26 +112,30 @@ final readonly class ObjectNormalizer
             );
         }
 
-        // what did we receive?
-        //        if (
-        //            !($propertyValue instanceof JsonSerializable) &&
-        //            false === is_scalar($propertyValue) && false === is_array($propertyValue)
-        //        ) {
-        //            return;
-        //        }
+        if (is_array($propertyValue)) {
+            $propertyValue = $this->mapArrayContents($propertyValue);
+        }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
-    private function assignToStdClass($propertyName, $propertyValue, $classObject): void
+    private function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
     {
         if ($propertyValue instanceof JsonSerializable) {
-            $classObject->{$propertyName} = $this->serializeJsonSerializableToStdObject($propertyValue);
+            $jsonBuilder = $this->serializeJsonSerializableToStdObject($propertyValue);
+            $classObject->addObjectProperty($propertyName, $jsonBuilder);
 
             return;
         }
 
-        $classObject->{$propertyName} = $propertyValue;
+        match (gettype($propertyValue)) {
+            'NULL' => $classObject->addNullProperty($propertyName),
+            'boolean' => $classObject->addBooleanProperty($propertyName, $propertyValue),
+            'array' => $classObject->addArrayProperty($propertyName, $propertyValue),
+            'string' => $classObject->addStringProperty($propertyName, $propertyValue),
+            'integer', 'double' => $classObject->addNumericProperty($propertyName, $propertyValue),
+            default => throw new JsonSerializableException('Invalid type.'),
+        };
     }
 
     /**
@@ -178,10 +188,6 @@ final readonly class ObjectNormalizer
         ReflectionMethod|ReflectionProperty $reflection,
         $originalObject,
     ): mixed {
-        if ($reflection->isPrivate() || $reflection->isProtected()) {
-            $reflection->setAccessible(true);
-        }
-
         if (false === ($reflection instanceof ReflectionMethod)) {
             return $reflection->getValue($reflection->isStatic() ? null : $originalObject);
         }
@@ -195,5 +201,21 @@ final readonly class ObjectNormalizer
         }
 
         return $propertyValue;
+    }
+
+    private function mapArrayContents(array $array): array
+    {
+        $newArray = [];
+        foreach ($array as $value) {
+            $newArray[] = match (true) {
+                $value instanceof JsonSerializable => $this->serializeJsonSerializableToStdObject($value),
+                is_null($value) => null,
+                is_scalar($value) => $value,
+                is_array($value) => $this->mapArrayContents($value),
+                default => throw new JsonSerializableException('Invalid type in array.'),
+            };
+        }
+
+        return $newArray;
     }
 }
