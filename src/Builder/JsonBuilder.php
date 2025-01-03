@@ -10,6 +10,6 @@ final class JsonBuilder extends AbstractJsonBuilder
     {
         self::assertPropertyName($prop);
 
-        return $this->addProp($prop, null);
+        return $this->addProperty($prop, null);
     }
 }

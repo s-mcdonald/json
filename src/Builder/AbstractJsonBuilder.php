@@ -57,7 +57,7 @@ abstract class AbstractJsonBuilder implements JsonSerializable
         return $this->jsonProperties;
     }
 
-    protected function addProp(string $prop, mixed $value = null): self
+    private function addProp(string $prop, mixed $value = null): self
     {
         $this->jsonProperties[$prop] = $value;
 
