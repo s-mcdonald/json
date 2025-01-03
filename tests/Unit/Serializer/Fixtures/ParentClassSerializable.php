@@ -19,7 +19,7 @@ class ParentClassSerializable implements JsonSerializable
     public GoodChildObjectSerializable $child;
 
     public function __construct(
-        private readonly int|null $creditCard = null,
+        private readonly int|null $creditCard,
         #[JsonProperty('userAddress')] private string $address,
     ) {
     }
