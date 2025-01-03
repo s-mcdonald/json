@@ -1,6 +1,6 @@
 {
-    "name": "s-mcdonald/json",
-    "description": "A modern PHP JSON Object Serialization Library",
+    "name": "s-mcdonald/phpjson",
+    "description": "PHPJson: A fast and modern JSON Library",
     "version": "0.0.5",
     "type": "project",
     "license": "MIT",
