@@ -6,6 +6,12 @@
 
 _A modern PHP JSON Object Serialization Library._
 
+## 💖 Support This Project
+This project is supported by your donations! Click the **[Sponsor](https://github.com/sponsors/s-mcdonald)** link to display funding options.
+
+
+
+
 This library enables the Serializing of PHP Objects/Classes. It also contains utility features for working with JSON structures.
 
 Attributes are the default mechanism to map POPO fields to and from JSON for Serialization as they allow for quick and robust implementation.
@@ -252,3 +258,7 @@ composer require s-mcdonald/json
 
 Json is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT)
 (See LICENSE file for details).
+
+
+## 🙌 Contribute
+Want to contribute? Check out the issues section to get started.
