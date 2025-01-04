@@ -134,4 +134,14 @@ JSON
         static::assertEquals('child1', $array['children'][0]['name']);
         static::assertEquals('child2', $array['children'][1]['name']);
     }
+
+    /**
+     * With malformed json string, false is expected to be returned
+     */
+    public function testToArrayWithBadJson(): void
+    {
+        $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}';
+        $array = Json::toArray($json);
+        static::assertFalse($array);
+    }
 }
