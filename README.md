@@ -263,18 +263,23 @@ echo Json::createJsonBuilder()
 Prettify or Uglify your json strings
 
 ```php
-Json::prettify('{"name":"bar"}')
+Json::prettify('{"name":"bar","age":34}')
 ```
 ```json
 {
-    "name": "bar"
+    "name": "bar",
+    "age": 34
 }
 ```
 and then the reverse
 ```php
-Json::prettify('{
-    "name": "bar"
-}') // '{"name":"bar"}'
+Json::uglify('{
+    "name": "bar",
+    "age": 34
+}') 
+```
+```json
+{"name":"bar","age":34}
 ```
 
 # Reference
