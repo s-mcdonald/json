@@ -189,7 +189,7 @@ class MyUser
   "isActive": true
 }
 ```
-#### JSON
+#### Hydration
 ```php
 $myUser = Json::deserialize($json, MyUser::class);
 ```

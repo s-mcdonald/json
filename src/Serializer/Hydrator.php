@@ -7,11 +7,16 @@ namespace SamMcDonald\Json\Serializer;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionProperty;
+use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 
 final class Hydrator
 {
+    private JsonPropertyReader $reader;
+
     public function __construct()
     {
+        $this->reader = new JsonPropertyReader();
     }
 
     /**
@@ -26,13 +31,28 @@ final class Hydrator
         $reflectionClass = new ReflectionClass($fqClassName);
         $instance = $reflectionClass->newInstanceWithoutConstructor();
 
-        foreach ($data as $key => $value) {
-            if ($reflectionClass->hasProperty($key)) {
-                $property = $reflectionClass->getProperty($key);
-                $property->setValue($instance, $value);
+        foreach ($data as $propName => $value) {
+            $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
+            if (null === $reflectionProperty) {
+                continue;
             }
+
+            $reflectionProperty->setValue($instance, $value);
         }
 
         return $instance;
+    }
+
+    private function getPropertyFromReflection(ReflectionClass $reflectionClass, string $propName): ReflectionProperty|null
+    {
+        if ($property = $this->reader->findPropertyByAttributeWithArgument($reflectionClass, 'name', $propName)) {
+            return $property;
+        }
+
+        if ($reflectionClass->hasProperty($propName)) {
+            return $reflectionClass->getProperty($propName);
+        }
+
+        return null;
     }
 }

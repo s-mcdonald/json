@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Tests\Fixtures;
+namespace SamMcDonald\Json\Tests\Fixtures\Enums;
 
 use SamMcDonald\Json\Serializer\Contracts\JsonEnum;
 
