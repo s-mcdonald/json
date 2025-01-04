@@ -22,6 +22,9 @@ use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder
 use stdClass;
 use TypeError;
 
+/**
+ * Normalize from JsonSerializable to stdClass.
+ */
 final readonly class ObjectNormalizer
 {
     public function __construct(
