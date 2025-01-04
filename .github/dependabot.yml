@@ -1,0 +1,22 @@
+# Dependabot configuration file
+
+version: 2
+updates:
+    - package-ecosystem: "composer"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "03:00"
+      commit-message:
+          prefix: "fix"
+      open-pull-requests-limit: 10
+
+    # Optional settings for GitHub Actions dependency updates
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "03:00"
+      open-pull-requests-limit: 5
