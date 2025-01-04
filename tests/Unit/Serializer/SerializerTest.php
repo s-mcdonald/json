@@ -7,40 +7,20 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
-use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\BadPropertyNamesSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithMethodAndConstructor;
-use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\Nestable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses\NestableWithArray;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NoAttributeClasses\SimpleScalaProperties;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ParentClassSerializable;
 
+/**
+ * Move all these tests to JsonTest.
+ */
 class SerializerTest extends TestCase
 {
-    public function testSimpleSerializeWithUninitializedCausesException(): void
-    {
-        $this->expectException(JsonSerializableException::class);
-        $this->expectExceptionMessage('Value not initialized');
-
-        $sut = new ClassWithPublicStringProperty();
-
-        Json::serialize($sut);
-    }
-
-    public function testSimpleSerialize(): void
-    {
-        $sut = new ClassWithPublicStringProperty();
-        $sut->name = 'bar';
-
-        static::assertEquals(
-            '{"name":"bar"}',
-            Json::serialize($sut),
-        );
-    }
-
     public function testSerialize(): void
     {
         $sut = new ClassWithMethodAndConstructor(1234);
