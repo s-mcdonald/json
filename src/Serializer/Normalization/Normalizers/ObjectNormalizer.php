@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
+use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionEnum;
@@ -18,26 +19,31 @@ use SamMcDonald\Json\Serializer\Contracts\JsonEnum;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Contracts\NormalizerInterface;
 use stdClass;
 use TypeError;
 
 /**
  * Normalize from object to stdClass.
  */
-final readonly class ObjectNormalizer
+final readonly class ObjectNormalizer implements NormalizerInterface
 {
     public function __construct(
         private JsonPropertyReader $propertyReader,
     ) {
     }
 
-    public function normalize(object $propertyValue): stdClass
+    public function normalize(mixed $input): stdClass
     {
-        if ($propertyValue instanceof JsonEnum) {
-            return $this->normalizeEnum($propertyValue);
+        if (false === is_object($input)) {
+            throw new InvalidArgumentException('input must be an object.');
         }
 
-        return $this->transferToJsonBuilder($propertyValue)->toStdClass();
+        if ($input instanceof JsonEnum) {
+            return $this->normalizeEnum($input);
+        }
+
+        return $this->transferToJsonBuilder($input)->toStdClass();
     }
 
     private function transferToJsonBuilder(object $propertyValue): JsonBuilder
