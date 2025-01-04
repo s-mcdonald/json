@@ -21,22 +21,26 @@ Attributes are the default mechanism to map POPO fields to and from JSON for Ser
 While attributes are the default way to map fields in PHPJson. This library allows for the use of a JSON configuration file to be passed to the serializer as an alternative method. 
 
 
-## Documentation
+## Contents
 
 * [Usage](#Usage)
+  * [Serialization](#serialization)
+    * [Basic usage](#basic-usage)
+    * [Override Json Properties](#override-json-properties)
+    * [Nested Structures](#nested-structures)
+    * [Serializing Enums](#serializing-enums)
+  * [Hydration/Deserialization](#deserialize-aka-object-hydration)
+  * [JsonBuilder](#jsonbuilder)
+  * [Json Formatting](#json-formatting)
 * [Installation](#installation)
 * [Dependencies](#dependencies)
+* [License](#license)
+* [Contribute](#contribute)
+
 
 # Serialization
 
-## Whats required to Serialize/UnSerialize
-
-1. add `JsonSerializable` to the class.
-2. add `JsonProperty` attributes to properties, methods or at the class level.
-3. Run the serializer.
-
-
-## Using the Serializer
+## Basic usage
 
 ```php
 echo Json::serialize($user);
@@ -44,11 +48,7 @@ echo Json::serialize($user);
 // Or
 $serializer = new JsonSerializer();
 echo $serializer->serialize($user);
-```
 
-
-## Quick Example
-```php
 class User implements JsonSerializable
 {
     #[JsonProperty]
@@ -70,8 +70,10 @@ class User implements JsonSerializable
 }
 ```
 
-## Override property names
-You can override the property or method names by supplying your own.
+
+## Override Json Properties
+You can override the property or method names by supplying your own. This also works in reverse for hydration.
+
 ```php
 class User implements JsonSerializable
 {
@@ -94,7 +96,7 @@ class User implements JsonSerializable
 }
 ```
 
-## Example using methods
+Example using methods
 ```php
 class User implements JsonSerializable
 {
@@ -111,23 +113,7 @@ class User implements JsonSerializable
 }
 ```
 
-
-## Promoted Constructor property attributes
-Json allows for attributes on the promoted properties.
-
-```php
-class MyClass implements JsonSerializable
-{
-    public function __construct(
-        #[JsonProperty('child', deserialize: true)]
-        private string $childProperty,
-    ){
-    }
-}
-```
-
-
-## Object Nesting Serialization.
+## Nested Structures
 
 Given the below classes, Json will serialize them into a single Json object with class nesting as required.
 
@@ -168,54 +154,9 @@ class ChildClass implements JsonSerializable
 ```
 
 
-## Deserialize (Object Hydration)
-For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, PHPJson will hydrate your class or entity.
+## Serializing Enums
 
-#### PHP
-```php
-class MyUser 
-{
-    public string $name;
-    public int $age;
-    public bool $isActive;
-}
-```
-
-#### JSON
-```json
-{
-  "name": "Freddy",
-  "age": 35,
-  "isActive": true
-}
-```
-#### Hydration
-```php
-$myUser = Json::deserialize($json, MyUser::class);
-```
-```
-YourNamespace\MyUser Object (
-    'name' => 'Freddy'
-    'age' => 35
-    'isActive' => true
-)
-```
-
-The JsonProperty attribute has additional arguments to handle
-deserialization targets. This will allow you to map to a field with a different property name.
-
-```php
-class MyUser 
-{
-    #[JsonProperty('name')]
-    public string $userName;
-
-    public int $age;
-    public bool $isActive;
-}
-```
-
-# Serialize Enums (including backed enums)
+PHPJson also supports serializing enums, pure and backed enums.
 
 ```php
 enum Status 
@@ -229,6 +170,52 @@ echo Json::serialize(Status::Enabled);
 ```json
 {
     "Status": "Enabled"
+}
+```
+
+# Deserialize aka Object Hydration
+For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, PHPJson will hydrate your class or entity.
+
+PHP
+```php
+class MyUser 
+{
+    public string $name;
+    public int $age;
+    public bool $isActive;
+}
+```
+
+JSON
+```json
+{
+  "name": "Freddy",
+  "age": 35,
+  "isActive": true
+}
+```
+
+
+Now deserialize the json string with the PHP class.
+```php
+$myUser = Json::deserialize($json, MyUser::class);
+```
+```
+YourNamespace\MyUser Object (
+    'name' => 'Freddy'
+    'age' => 35
+    'isActive' => true
+)
+```
+
+```php
+class MyUser 
+{
+    #[JsonProperty('name')]
+    public string $userName;
+
+    public int $age;
+    public bool $isActive;
 }
 ```
 
@@ -292,25 +279,21 @@ Json::prettify('{
 
 # Reference
 
-<a name="installation"></a>
 ## Installation
-`NOTE`: Not available via composer just yet.
-Via Composer. Run the following command from your project's root.
-
-```
+Install this package via composer, or simply fork/clone the repo.
+```bash
 composer require s-mcdonald/phpjson
 ```
 
-<a name="dependencies"></a>
 ## Dependencies
 
-*  Php 8.2
+*  PHP 8.2, 8.3, 8.4
 
 ## License
 
 Json is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT)
 (See LICENSE file for details).
 
-
+<a name="contribute">
 ## 🙌 Contribute
 Want to contribute? Check out the issues section to get started.
