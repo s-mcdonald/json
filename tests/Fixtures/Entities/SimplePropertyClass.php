@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Tests\Fixtures\Entities;
 
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 
-class SimplePropertyClass implements JsonSerializable
+class SimplePropertyClass
 {
     public function __construct(
         #[JsonProperty('userName')]

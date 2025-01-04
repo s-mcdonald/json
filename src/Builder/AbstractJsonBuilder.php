@@ -6,11 +6,10 @@ namespace SamMcDonald\Json\Builder;
 
 use Exception;
 use InvalidArgumentException;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 use stdClass;
 
-abstract class AbstractJsonBuilder implements JsonSerializable
+abstract class AbstractJsonBuilder
 {
     private array $jsonProperties = [];
 

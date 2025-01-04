@@ -7,13 +7,12 @@ namespace SamMcDonald\Json\Serializer\Normalization\Normalizers\Context;
 use ReflectionMethod;
 use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 
 readonly class Context
 {
     public function __construct(
         private ReflectionProperty|ReflectionMethod $reflectionItem,
-        private JsonSerializable $originalObject,
+        private object $originalObject,
         private JsonBuilder $classObject,
         private array $jsonPropertyAttributes,
         private string $propertyName,
@@ -30,7 +29,7 @@ readonly class Context
         return $this->reflectionItem;
     }
 
-    public function getOriginalObject(): JsonSerializable
+    public function getOriginalObject(): object
     {
         return $this->originalObject;
     }
