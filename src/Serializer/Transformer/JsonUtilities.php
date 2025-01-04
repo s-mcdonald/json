@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer\Transformer;
 
-use Exception;
-use SamMcDonald\Json\Serializer\Exceptions\JsonException;
+use SamMcDonald\Json\Serializer\Encoding\Components\ArrayToJsonEncoder;
+use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
 use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 
 class JsonUtilities
@@ -22,29 +22,25 @@ class JsonUtilities
 
     public function isValid(string $json): bool
     {
-        try {
-            json_decode($json, true, 512, flags: JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            return false;
-        }
-
-        return true;
+        return (new JsonToArrayDecoder())->decode($json)->isValid();
     }
 
     public function push(string $json, mixed $item): string|false
     {
-        if (false === $this->isValid($json)) {
+        $package = (new JsonToArrayDecoder())->decode($json);
+        if (false === $package->isValid()) {
             return false;
         }
+        $decodedData = $package->getBody();
+        $decodedData[] = $item;
 
-        try {
-            $decodedData = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-            $decodedData[] = $item;
+        $package = (new ArrayToJsonEncoder())->encode($decodedData);
 
-            return json_encode($decodedData, flags: JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            throw new JsonException('Invalid JSON:' . $e->getMessage());
+        if ($package->isValid()) {
+            return $package->getBody();
         }
+
+        return false;
     }
 
     public function remove(string $json, string $property): string|false
@@ -53,14 +49,22 @@ class JsonUtilities
             return false;
         }
 
-        try {
-            $decodedData = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-            unset($decodedData[$property]);
-
-            return json_encode($decodedData, flags: JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            throw new JsonException('Invalid JSON:' . $e->getMessage());
+        $package = (new JsonToArrayDecoder())->decode($json);
+        if (false === $package->isValid()) {
+            return false;
         }
+
+        $decodedData = $package->getBody();
+
+        unset($decodedData[$property]);
+
+        $package = (new ArrayToJsonEncoder())->encode($decodedData);
+
+        if ($package->isValid()) {
+            return $package->getBody();
+        }
+
+        return false;
     }
 
     public function toArray(string $json): array|false
@@ -69,10 +73,11 @@ class JsonUtilities
             return false;
         }
 
-        try {
-            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        } catch (Exception $e) {
-            throw new JsonException('Invalid JSON:' . $e->getMessage());
+        $package = (new JsonToArrayDecoder())->decode($json);
+        if ($package->isValid()) {
+            return $package->getBody();
         }
+
+        return false;
     }
 }
