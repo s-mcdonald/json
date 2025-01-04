@@ -117,4 +117,21 @@ JSON
             Json::uglify($jsonPretty),
         );
     }
+
+    public function testToArray(): void
+    {
+        $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}]}';
+
+        $array = Json::toArray($json);
+
+        static::assertIsArray($array);
+        static::assertCount(4, $array);
+        static::assertEquals('bar', $array['name']);
+        static::assertEquals(19, $array['age']);
+        static::assertEquals(true, $array['isActive']);
+        static::assertIsArray($array['children']);
+        static::assertCount(2, $array['children']);
+        static::assertEquals('child1', $array['children'][0]['name']);
+        static::assertEquals('child2', $array['children'][1]['name']);
+    }
 }

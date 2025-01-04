@@ -11,7 +11,7 @@ use SamMcDonald\Json\Serializer\Hydrator;
 readonly class JsonDecoder implements Contracts\DecoderInterface
 {
     public function __construct(
-        private Hydrator $hydrator,
+        private Hydrator|null $hydrator = null,
         private int $depth = 512,
     ) {
     }
@@ -21,7 +21,7 @@ readonly class JsonDecoder implements Contracts\DecoderInterface
         try {
             $decodedData = json_decode($jsonValue, false, $this->depth, JSON_THROW_ON_ERROR);
 
-            if (null !== $fqClassName) {
+            if (null !== $fqClassName && null !== $this->hydrator) {
                 $decodedData = $this->hydrator->hydrate($decodedData, $fqClassName);
             }
         } catch (Exception $e) {

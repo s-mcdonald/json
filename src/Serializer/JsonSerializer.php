@@ -39,7 +39,7 @@ class JsonSerializer
         return $this->encoder->encode($this->objectNormalizer->normalize($object), $format)->getBody();
     }
 
-    public function deserialize(string $json, string $classFqn)
+    public function deserialize(string $json, string $classFqn): mixed
     {
         return $this->decoder->decode($json, $classFqn)->getBody();
     }
