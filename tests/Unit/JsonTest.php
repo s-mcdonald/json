@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPrivateStringProperty;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
-use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
 
 class JsonTest extends TestCase
 {

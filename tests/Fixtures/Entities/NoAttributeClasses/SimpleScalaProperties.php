@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NoAttributeClasses;
+namespace SamMcDonald\Json\Tests\Fixtures\Entities\NoAttributeClasses;
 
 class SimpleScalaProperties
 {

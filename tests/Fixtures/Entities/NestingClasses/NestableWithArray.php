@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\NestingClasses;
+namespace SamMcDonald\Json\Tests\Fixtures\Entities\NestingClasses;
 
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 

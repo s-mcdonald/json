@@ -6,8 +6,7 @@ namespace SamMcDonald\Json\Tests\Unit\Encoding;
 
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
-use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
-use stdClass;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
 
 class DecodingTest extends TestCase
 {
