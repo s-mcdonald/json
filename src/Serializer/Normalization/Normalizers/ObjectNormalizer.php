@@ -220,8 +220,13 @@ final readonly class ObjectNormalizer implements NormalizerInterface
 
     private function normalizeEnum(JsonEnum $propertyValue): stdClass
     {
-        $value = $propertyValue->name;
         $reflectionClass = new ReflectionClass($propertyValue);
+
+        if (false === $reflectionClass->isEnum()) {
+            throw new JsonSerializableException('Value is not an enum.');
+        }
+
+        $value = $propertyValue->name;
         if ((new ReflectionEnum($propertyValue))->isBacked()) {
             $value = $propertyValue->value;
         }
