@@ -43,8 +43,5 @@
         "clean": [
             "@clean:csf:fix"
         ]
-    },
-    "conflict": {
-        "symfony/symfony": "*"
     }
 }
