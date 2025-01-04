@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Attributes\AttributeReader;
 
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
@@ -49,12 +50,22 @@ class JsonPropertyReader
         return false;
     }
 
-    /**
-     * @return array<JsonProperty>
-     */
-    private function getJsonPropertyAttributes(ReflectionProperty $prop): array
+    public function findPropertyByAttributeWithArgument(ReflectionClass $reflectionClass, string $argumentName, string $propName): ReflectionProperty|null
     {
-        return $prop->getAttributes(JsonProperty::class);
+        foreach ($reflectionClass->getProperties() as $property) {
+            $attributes = $property->getAttributes(JsonProperty::class);
+            foreach ($attributes as $attribute) {
+                $arguments = $attribute->getArguments();
+                if (
+                    isset($arguments[$argumentName]) && $arguments[$argumentName] === $propName
+                    || isset($arguments[0]) && $arguments[0] === $propName
+                ) {
+                    return $property;
+                }
+            }
+        }
+
+        return null;
     }
 
     private function getPropertyName(ReflectionAttribute $attribute, string $defaultName): string

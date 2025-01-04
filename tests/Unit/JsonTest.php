@@ -6,8 +6,8 @@ namespace SamMcDonald\Json\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
-use SamMcDonald\Json\Tests\Fixtures\MyBackedEnum;
-use SamMcDonald\Json\Tests\Fixtures\MyEnum;
+use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
+use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 
 class JsonTest extends TestCase
 {

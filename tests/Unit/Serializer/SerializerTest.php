@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\BadPropertyNamesSerializable;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Unit\Serializer\Fixtures\ClassWithPublicStringProperty;
@@ -256,7 +257,7 @@ JSON
         );
     }
 
-    public function testSimpleHydration(): void
+    public function testHydrateToAlternateProperty(): void
     {
         $expected = new SimpleScalaProperties();
         $expected->name = 'Freddy';
@@ -275,6 +276,37 @@ JSON
         static::assertEquals(
             $expected,
             Json::deserialize($json, SimpleScalaProperties::class),
+        );
+    }
+
+    public function testSimpleHydration2(): void
+    {
+        $expected = new SimplePropertyClass("myusername", 44);
+
+        $json = <<<JSON
+{
+  "userName": "myusername", 
+  "age": 44
+}
+JSON
+        ;
+
+        $hydrated = Json::deserialize($json, SimplePropertyClass::class);
+        assert($hydrated instanceof SimplePropertyClass);
+
+        static::assertEquals(
+            $expected,
+            $hydrated,
+        );
+
+        static::assertEquals(
+            'myusername',
+            $hydrated->getName(),
+        );
+
+        static::assertEquals(
+            44,
+            $hydrated->getAge(),
         );
     }
 }
