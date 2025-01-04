@@ -15,7 +15,6 @@ use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
-use SamMcDonald\Json\Serializer\Contracts\JsonEnum;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
@@ -39,7 +38,8 @@ final readonly class ObjectNormalizer implements NormalizerInterface
             throw new InvalidArgumentException('input must be an object.');
         }
 
-        if ($input instanceof JsonEnum) {
+        $reflectionClass = new ReflectionClass($input);
+        if ($reflectionClass->isEnum()) {
             return $this->normalizeEnum($input);
         }
 
@@ -218,13 +218,9 @@ final readonly class ObjectNormalizer implements NormalizerInterface
         return $newArray;
     }
 
-    private function normalizeEnum(JsonEnum $propertyValue): stdClass
+    private function normalizeEnum(object $propertyValue): stdClass
     {
         $reflectionClass = new ReflectionClass($propertyValue);
-
-        if (false === $reflectionClass->isEnum()) {
-            throw new JsonSerializableException('Value is not an enum.');
-        }
 
         $value = $propertyValue->name;
         if ((new ReflectionEnum($propertyValue))->isBacked()) {

@@ -22,7 +22,7 @@ final class Hydrator
     /**
      * @throws ReflectionException
      */
-    public function hydrate(object|array $data, string $fqClassName): object
+    public function hydrate(object|array $object, string $fqClassName): object
     {
         if (false === class_exists($fqClassName)) {
             throw new InvalidArgumentException("The class '$fqClassName' does not exist.");
@@ -31,7 +31,7 @@ final class Hydrator
         $reflectionClass = new ReflectionClass($fqClassName);
         $instance = $reflectionClass->newInstanceWithoutConstructor();
 
-        foreach ($data as $propName => $value) {
+        foreach ($object as $propName => $value) {
             $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
             if (null === $reflectionProperty) {
                 continue;
