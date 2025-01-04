@@ -49,7 +49,7 @@ echo Json::serialize($user);
 $serializer = new JsonSerializer();
 echo $serializer->serialize($user);
 
-class User implements JsonSerializable
+class User
 {
     #[JsonProperty]
     public string $name;
@@ -75,7 +75,7 @@ class User implements JsonSerializable
 You can override the property or method names by supplying your own. This also works in reverse for hydration.
 
 ```php
-class User implements JsonSerializable
+class User
 {
     #[JsonProperty('userName')]
     public string $name;
@@ -98,7 +98,7 @@ class User implements JsonSerializable
 
 Example using methods
 ```php
-class User implements JsonSerializable
+class User
 {
     #[JsonProperty('creditCardNumber')]
     public function getCreditCard(): int
@@ -126,7 +126,7 @@ $sut->someChild = new ChildClass("bar");
 ```
 
 ```php
-class ParentClass implements JsonSerializable
+class ParentClass
 {
     #[JsonProperty('userName')]
     public string $name;
@@ -135,7 +135,7 @@ class ParentClass implements JsonSerializable
     public ChildClass $someChild;
 }
 
-class ChildClass implements JsonSerializable
+class ChildClass
 {
     public function __construct(
         #[JsonProperty('childProp')]

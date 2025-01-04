@@ -22,7 +22,7 @@ use stdClass;
 use TypeError;
 
 /**
- * Normalize from JsonSerializable to stdClass.
+ * Normalize from object to stdClass.
  */
 final readonly class ObjectNormalizer
 {
