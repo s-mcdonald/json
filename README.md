@@ -294,7 +294,8 @@ composer require s-mcdonald/phpjson
 Json is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT)
 (See LICENSE file for details).
 
-<a name="contribute'>
+## Contribute
+🙌 Want to contribute? 
 
-## 🙌 Contribute
-Want to contribute? Check out the issues section to get started.
+Check out the issues section to get started.
+
