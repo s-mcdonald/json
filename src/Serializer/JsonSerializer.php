@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer;
 
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\DecoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\JsonDecoder;
@@ -34,7 +33,7 @@ class JsonSerializer
         }
     }
 
-    public function serialize(JsonSerializable $object, JsonFormat $format): string
+    public function serialize(object $object, JsonFormat $format): string
     {
         return $this->encoder->encode($this->objectNormalizer->normalize($object), $format)->getBody();
     }

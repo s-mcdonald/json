@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 use SamMcDonald\Json\Builder\JsonBuilder;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use stdClass;
 
@@ -60,7 +59,7 @@ class ArrayNormalizer
             return true;
         }
 
-        if ($propertyValue instanceof JsonSerializable) {
+        if (is_object($propertyValue)) {
             return true;
         }
 

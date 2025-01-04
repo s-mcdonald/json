@@ -15,7 +15,6 @@ use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Contracts\JsonEnum;
-use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
@@ -32,7 +31,7 @@ final readonly class ObjectNormalizer
     ) {
     }
 
-    public function normalize(JsonSerializable $propertyValue): stdClass
+    public function normalize(object $propertyValue): stdClass
     {
         if ($propertyValue instanceof JsonEnum) {
             return $this->normalizeEnum($propertyValue);
@@ -41,7 +40,7 @@ final readonly class ObjectNormalizer
         return $this->transferToJsonBuilder($propertyValue)->toStdClass();
     }
 
-    private function transferToJsonBuilder(JsonSerializable $propertyValue): JsonBuilder
+    private function transferToJsonBuilder(object $propertyValue): JsonBuilder
     {
         $jsonBuilder = new JsonBuilder();
         $contextBuilder = new ContextBuilder($this->propertyReader);
@@ -119,7 +118,7 @@ final readonly class ObjectNormalizer
 
     private function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
     {
-        if ($propertyValue instanceof JsonSerializable) {
+        if (is_object($propertyValue)) {
             $classObject->addProperty($propertyName, $this->transferToJsonBuilder($propertyValue));
 
             return;
@@ -135,7 +134,7 @@ final readonly class ObjectNormalizer
     /**
      * @return array<ReflectionProperty>
      */
-    private function getReflectionProperties(JsonSerializable $originalObject): array
+    private function getReflectionProperties(object $originalObject): array
     {
         return (new ReflectionObject($originalObject))->getProperties(
             ReflectionProperty::IS_PUBLIC |
@@ -147,7 +146,7 @@ final readonly class ObjectNormalizer
     /**
      * @return array<ReflectionMethod>
      */
-    private function getReflectionMethods(JsonSerializable $originalObject): array
+    private function getReflectionMethods(object $originalObject): array
     {
         return (new ReflectionObject($originalObject))->getMethods(
             ReflectionProperty::IS_PUBLIC |
@@ -169,7 +168,7 @@ final readonly class ObjectNormalizer
         }
 
         if (
-            $propertyValue instanceof JsonSerializable
+            is_object($propertyValue)
             && $this->propertyReader->hasJsonPropertyAttributes($attributes)
         ) {
             return true;
@@ -205,7 +204,7 @@ final readonly class ObjectNormalizer
                 is_null($value) => null,
                 is_bool($value), is_scalar($value) => $value,
                 is_array($value) => $this->mapArrayContents($value),
-                $value instanceof JsonSerializable => $this->transferToJsonBuilder($value),
+                is_object($value) => $this->transferToJsonBuilder($value),
                 default => throw new JsonSerializableException('Invalid type in array.'),
             };
         }
