@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Builder;
 
+use Exception;
 use InvalidArgumentException;
-use JsonException;
-use RuntimeException;
 use SamMcDonald\Json\Serializer\Contracts\JsonSerializable;
+use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 use stdClass;
 
 abstract class AbstractJsonBuilder implements JsonSerializable
 {
     private array $jsonProperties = [];
 
-    /**
-     * @throws JsonException
-     */
     public function __toString(): string
     {
-        return json_encode($this->jsonProperties, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
+        try {
+            return json_encode($this->jsonProperties, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
+        } catch (Exception $e) {
+            throw new JsonException($e->getMessage());
+        }
     }
 
     public function addProperty(string $prop, mixed $value): self
@@ -33,8 +34,8 @@ abstract class AbstractJsonBuilder implements JsonSerializable
     {
         try {
             return json_decode((string) $this, false, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new RuntimeException($e->getMessage());
+        } catch (Exception $e) {
+            throw new JsonException($e->getMessage());
         }
     }
 
@@ -42,8 +43,8 @@ abstract class AbstractJsonBuilder implements JsonSerializable
     {
         try {
             return json_decode((string) $this, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $e) {
-            throw new RuntimeException($e->getMessage());
+        } catch (Exception $e) {
+            throw new JsonException($e->getMessage());
         }
     }
 
