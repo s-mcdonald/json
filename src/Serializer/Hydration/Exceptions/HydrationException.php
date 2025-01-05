@@ -22,4 +22,14 @@ class HydrationException extends RuntimeException
     {
         return new self('Unable to parse hydration data: Bad Property name');
     }
+
+    public static function createMethodHasTooManyJsonProperties(string $methodName): self
+    {
+        return new self('Method ' . $methodName . ' has too many json properties.');
+    }
+
+    public static function createTooManyRequiredParameters(string $getName): self
+    {
+        return new self('Method ' . $getName . ' has too many required parameters.');
+    }
 }
