@@ -30,9 +30,6 @@
             "SamMcDonald\\Json\\Tests\\Fixtures\\": "tests/Fixtures"
         }
     },
-    "exclude-from-classmap": [
-        "/tests/"
-    ],
     "scripts": {
         "test": "vendor/bin/phpunit --configuration ./phpunit.xml",
         "build": [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Tests\Unit;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
@@ -214,11 +215,7 @@ JSON
         );
     }
 
-    /**
-     * When a bad name is presented in the JsonProperty we should throw an exception
-     * to alert the developer|user to fix or resolve the issue.
-     * @dataProvider provideDataForBadPropertyName
-     */
+    #[DataProvider('provideDataForBadPropertyName')]
     public function testSerializeWithBadPropertyNameCausesException($badPropertyNameObject): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -437,9 +434,7 @@ JSON
         );
     }
 
-    /**
-     * @dataProvider provideDataForTestJsonIsValid
-     */
+    #[DataProvider('provideDataForTestJsonIsValid')]
     public function testJsonIsValid(string $json, bool $valid): void
     {
         static::assertEquals(
