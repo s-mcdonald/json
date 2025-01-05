@@ -7,9 +7,11 @@ namespace SamMcDonald\Json\Serializer\Attributes\AttributeReader;
 use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 
 /**
  * This class needs a lot more work. Its working for now in its current purpose but definitely not
@@ -50,6 +52,30 @@ class JsonPropertyReader
         }
 
         return false;
+    }
+
+    public function findMethodWithJsonProperty(ReflectionClass $reflectionClass, int|string $propName): ReflectionMethod|null
+    {
+        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+            $reflectedAttributes = $reflectionMethod->getAttributes(JsonProperty::class);
+            if ([] === $reflectedAttributes) {
+                continue;
+            }
+            if (count($reflectedAttributes) > 1) {
+                throw HydrationException::createMethodHasTooManyJsonProperties($reflectionMethod->getName());
+            }
+            $jsonAttribute = $reflectedAttributes[0]->newInstance();
+
+            if (null === $jsonAttribute->getName() && $reflectionMethod->getName() === $propName) {
+                return $reflectionMethod;
+            }
+
+            if ($jsonAttribute->getName() === $propName) {
+                return $reflectionMethod;
+            }
+        }
+
+        return null;
     }
 
     public function findPropertyByAttributeWithArgument(ReflectionClass $reflectionClass, string $argumentName, string $propName): ReflectionProperty|null
