@@ -33,7 +33,7 @@ class JsonSerializer
         }
     }
 
-    public function serialize(object $object, JsonFormat $format): string
+    public function serialize(object $object, JsonFormat $format = JsonFormat::Compressed): string
     {
         return $this->encoder->encode($this->objectNormalizer->normalize($object), $format)->getBody();
     }
