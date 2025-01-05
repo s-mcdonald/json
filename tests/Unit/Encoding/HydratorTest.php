@@ -11,6 +11,18 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertiesNoOverrideClass;
 
 class HydratorTest extends TestCase
 {
+    public function testHydrationFailureWithTypeDifference(): void
+    {
+        $this->expectException(HydrationException::class);
+        $this->expectExceptionMessage('Unable to parse hydration data: Expected array but got integer');
+
+        $input = ["name" => "foo-name", "age" => ["keyname" => 44] ];
+
+        $sut = new Hydrator();
+
+        $sut->hydrate($input, SimplePropertiesNoOverrideClass::class);
+    }
+
     public function testHydrationFailureUsingBadArrayKeyForPropertyName(): void
     {
         $this->expectException(HydrationException::class);

@@ -10,14 +10,21 @@ use ReflectionException;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
+use SamMcDonald\Json\Serializer\Hydration\HydrationConfiguration;
+use SamMcDonald\Json\Serializer\Hydration\HydrationTypeMap;
 
 final class Hydrator
 {
     private JsonPropertyReader $reader;
 
-    public function __construct()
-    {
+    public function __construct(
+        private HydrationConfiguration|null $config = null,
+    ) {
         $this->reader = new JsonPropertyReader();
+
+        if (null === $this->config) {
+            $this->config = new HydrationConfiguration();
+        }
     }
 
     /**
@@ -39,6 +46,11 @@ final class Hydrator
             $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
             if (null === $reflectionProperty) {
                 continue;
+            }
+
+            $assignType = HydrationTypeMap::get($reflectionProperty->getType()?->getName());
+            if ($assignType !== gettype($value)) {
+                throw HydrationException::createHydrationParseTypeException(gettype($value), $assignType);
             }
 
             $reflectionProperty->setValue($instance, $value);
