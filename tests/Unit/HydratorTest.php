@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Tests\Unit\Encoding;
+namespace SamMcDonald\Json\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
