@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Attributes;
 
 use Attribute;
+use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
-class JsonProperty
+readonly class JsonProperty
 {
     public function __construct(
         private string|null $name = null,
+        private JsonType|null $type = null,
     ) {
     }
 
@@ -22,6 +24,11 @@ class JsonProperty
     public function getName(): string|null
     {
         return $this->name;
+    }
+
+    public function getType(): JsonType|null
+    {
+        return $this->type;
     }
 
     public static function getHasValidName(string|null $propertyName): bool
