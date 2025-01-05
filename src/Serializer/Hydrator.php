@@ -9,7 +9,6 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
-use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 use SamMcDonald\Json\Serializer\Hydration\HydrationConfiguration;
 use SamMcDonald\Json\Serializer\Hydration\HydrationTypeMap;
@@ -63,28 +62,6 @@ final class Hydrator
         }
 
         return null;
-    }
-
-    private function methodHydrationCheck($reflectionClass, $methodName): void
-    {
-        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-            if ($reflectionMethod->isStatic()) {
-                continue;
-            }
-            if (0 === count($reflectionMethod->getParameters())) {
-                continue;
-            }
-            $reflectedAttributes = $reflectionMethod->getAttributes(JsonProperty::class);
-            if ([] === $reflectedAttributes) {
-                continue;
-            }
-            if (count($reflectedAttributes) > 1) {
-                throw HydrationException::createMethodHasTooManyJsonProperties($reflectionMethod->getName());
-            }
-            if ($reflectionMethod->getNumberOfRequiredParameters() > 1) {
-                throw HydrationException::createTooManyRequiredParameters($reflectionMethod->getName());
-            }
-        }
     }
 
     private function attemptHydratePopoProperty(ReflectionClass $reflectionClass, $instance, int|string $propName, mixed $value): void
