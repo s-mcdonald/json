@@ -48,28 +48,23 @@ class ArrayNormalizer implements NormalizerInterface
         $this->assignToStdClass($property, $value, $jsonBuilder);
     }
 
+    private function isSerializable($propertyValue): bool
+    {
+        return null === $propertyValue
+            || is_scalar($propertyValue)
+            || is_array($propertyValue)
+            || is_bool($propertyValue)
+            || is_object($propertyValue);
+    }
+
     private function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
     {
         match (\gettype($propertyValue)) {
+            'object' => $classObject->addProperty($propertyName, $this->mapObjectContents($propertyValue)),
             'array' => $classObject->addProperty($propertyName, $this->mapArrayContents($propertyValue)),
             'NULL', 'boolean', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
-            default => throw new JsonSerializableException('Invalid type.'),
+            default => throw new JsonSerializableException('Invalid type: Got :' . \gettype($propertyValue)),
         };
-    }
-
-    private function isSerializable($propertyValue): bool
-    {
-        if (
-            null === $propertyValue || is_scalar($propertyValue) || is_array($propertyValue)
-        ) {
-            return true;
-        }
-
-        if (is_object($propertyValue)) {
-            return true;
-        }
-
-        return false;
     }
 
     private function mapArrayContents(array $array): array
@@ -85,5 +80,16 @@ class ArrayNormalizer implements NormalizerInterface
         }
 
         return $newArray;
+    }
+
+    private function mapObjectContents(object $propertyValue): JsonBuilder
+    {
+        $jsonBuilder = new JsonBuilder();
+
+        foreach ($propertyValue as $key => $value) {
+            $this->processProperty($key, $value, $jsonBuilder);
+        }
+
+        return $jsonBuilder;
     }
 }
