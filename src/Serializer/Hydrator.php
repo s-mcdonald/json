@@ -9,6 +9,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
+use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 
 final class Hydrator
 {
@@ -32,6 +33,9 @@ final class Hydrator
         $instance = $reflectionClass->newInstanceWithoutConstructor();
 
         foreach ($object as $propName => $value) {
+            if (false === is_string($propName)) {
+                throw HydrationException::createHydrationParseWithBadPropertyNameException();
+            }
             $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
             if (null === $reflectionProperty) {
                 continue;
