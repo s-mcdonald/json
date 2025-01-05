@@ -554,6 +554,24 @@ JSON;
         static::assertEquals($expected, Json::push($json, "foo", "foovalue"));
     }
 
+    public function testAddProperty(): void
+    {
+        $json = '{"name":"bar"}';
+
+        $expected = <<<JSON
+{
+    "name": "bar",
+    "age": 19
+}
+JSON;
+        $sut = Json::createFromString($json);
+
+        static::assertEquals(
+            $expected,
+            (string)$sut->addProperty("age", 19)->toPretty(),
+        );
+    }
+
     public function testRemove(): void
     {
         $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}]}';

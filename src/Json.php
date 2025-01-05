@@ -21,6 +21,13 @@ final class Json
         return self::prettify($this->json);
     }
 
+    public function addProperty(string $key, mixed $value): self
+    {
+        $this->json = self::push($this->json, $key, $value);
+
+        return $this;
+    }
+
     public static function createFromString(string $json): self
     {
         return new self($json);
