@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer\Attributes\AttributeReader;
 
+use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
@@ -80,7 +81,8 @@ class JsonPropertyReader
         $newName = $args[0] ?? $args['name'] ?? null;
 
         if (null === $newName || '' === $newName || str_contains($newName, ' ')) {
-            throw new JsonSerializableException('Invalid JsonProperty name.');
+            throw new InvalidArgumentException('Invalid property name');
+            //            throw new JsonSerializableException('Invalid JsonProperty name.');
         }
 
         return $newName;

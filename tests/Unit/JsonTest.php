@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
+use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
-use SamMcDonald\Json\Tests\Fixtures\Entities\BadJSONPropertyNames\BadPropertyNamesSerializable;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPrivateStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
@@ -23,7 +24,7 @@ class JsonTest extends TestCase
      */
     public function testSerializeWithBadPropertyNameCausesException($badPropertyNameObject): void
     {
-        $this->expectException(JsonSerializableException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $sut = $badPropertyNameObject;
         $sut->badProperty = 'foo';
@@ -37,7 +38,27 @@ class JsonTest extends TestCase
     public static function provideDataForBadPropertyName(): array
     {
         return [
-            [new BadPropertyNamesSerializable()],
+            'space in property name' => [
+                new class
+                {
+                    #[JsonProperty('user Name')]
+                    public string $badProperty;
+                }
+            ],
+            'minus in property name' => [
+                new class
+                {
+                    #[JsonProperty('-')]
+                    public string $badProperty;
+                }
+            ],
+            'equal sign in property name' => [
+                new class
+                {
+                    #[JsonProperty('=')]
+                    public string $badProperty;
+                }
+            ],
         ];
     }
 

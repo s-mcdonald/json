@@ -6,7 +6,7 @@ namespace SamMcDonald\Json\Tests\Fixtures\Entities\BadJSONPropertyNames;
 
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
-class BadPropertyNamesSerializable
+class BadPropertyHasSpaceInNameSerializable
 {
     #[JsonProperty('user Name')]
     public string $badProperty;
