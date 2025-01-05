@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json;
 
+use ArrayIterator;
 use SamMcDonald\Json\Builder\JsonBuilder;
+use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
+use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 use SamMcDonald\Json\Serializer\JsonSerializer;
 use SamMcDonald\Json\Serializer\Transformer\JsonUtilities;
@@ -78,5 +81,16 @@ final class Json
     public static function toArray(string $json): array|false
     {
         return (new JsonUtilities())->toArray($json);
+    }
+
+    public static function iterate(string $json): ArrayIterator
+    {
+        $decoded = (new JsonToArrayDecoder())->decode($json);
+
+        if (false === $decoded->isValid()) {
+            throw JsonSerializableException::unableToDecode();
+        }
+
+        return new ArrayIterator($decoded->getBody());
     }
 }
