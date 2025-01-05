@@ -9,9 +9,6 @@ use SamMcDonald\Json\Serializer\Encoding\Validator\Exceptions\JsonDecodeExceptio
 
 class JsonValidator implements JsonValidatorInterface
 {
-    /**
-     * Graceful validation.
-     */
     public function isValid(string $json): bool
     {
         if (empty($json)) {
@@ -20,7 +17,7 @@ class JsonValidator implements JsonValidatorInterface
 
         \json_decode($json);
 
-        return false === $this->getDecodeResult();
+        return false === $this->getLastJsonErrorCode();
     }
 
     public function validate(string $json): void
@@ -32,41 +29,34 @@ class JsonValidator implements JsonValidatorInterface
 
     public function getLastErrorMessage(): string|null
     {
-        $lastMessage = json_last_error();
+        $lastMessage = $this->getLastErrorMessage();
 
-        if (JSON_ERROR_NONE === $lastMessage) {
+        if (false === $lastMessage) {
             return null;
         }
 
-        return json_last_error_msg();
+        return $lastMessage;
     }
 
-    public static function getEncodeResult(): false|string
+    private function getLastJsonErrorCode(): false|string
     {
         return match (json_last_error()) {
             JSON_ERROR_NONE => false,
             JSON_ERROR_DEPTH => 'The maximum stack depth was exceeded.',
             JSON_ERROR_INVALID_PROPERTY_NAME => 'The property name is invalid.',
-            default => sprintf(
-                'The following encoding errors was encountered: `%s`',
-                json_last_error_msg(),
-            ),
-        };
-    }
-
-    private function getDecodeResult(): false|string
-    {
-        return match (json_last_error()) {
-            JSON_ERROR_NONE => false,
-            JSON_ERROR_DEPTH => 'The maximum stack depth was exceeded.',
             JSON_ERROR_STATE_MISMATCH => 'Malformed Json.',
             JSON_ERROR_CTRL_CHAR => 'Unexpected control character was found within the Json string.',
             JSON_ERROR_SYNTAX => 'Syntax error.',
             JSON_ERROR_UTF8 => 'Invalid UTF-8 characters.',
-            default => sprintf(
-                'The following decoding error was encountered: `%s`',
-                json_last_error_msg(),
-            ),
+            default => $this->getDefaultJsonErrorMessage(),
         };
+    }
+
+    private function getDefaultJsonErrorMessage(): string
+    {
+        return sprintf(
+            'The following decoding error was encountered: `%s`',
+            json_last_error_msg(),
+        );
     }
 }
