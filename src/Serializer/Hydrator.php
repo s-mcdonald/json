@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer;
 
-use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
@@ -27,28 +26,29 @@ final class Hydrator
         }
     }
 
-    /**
-     * @throws ReflectionException
-     */
     public function hydrate(object|array $object, string $fqClassName): object
     {
         if (false === class_exists($fqClassName)) {
-            throw new InvalidArgumentException("The class '$fqClassName' does not exist.");
+            throw HydrationException::createClassNotExist($fqClassName);
         }
 
-        $reflectionClass = new ReflectionClass($fqClassName);
-        $instance = $reflectionClass->newInstanceWithoutConstructor();
+        try {
+            $reflectionClass = new ReflectionClass($fqClassName);
+            $instance = $reflectionClass->newInstanceWithoutConstructor();
 
-        foreach ($object as $propName => $value) {
-            if ($method = $this->reader->findMethodWithJsonProperty($reflectionClass, $propName)) {
-                $method->invoke($instance, $value);
-                continue;
+            foreach ($object as $propName => $value) {
+                if ($method = $this->reader->findMethodWithJsonProperty($reflectionClass, $propName)) {
+                    $method->invoke($instance, $value);
+                    continue;
+                }
+
+                $this->attemptHydratePopoProperty($reflectionClass, $instance, $propName, $value);
             }
 
-            $this->attemptHydratePopoProperty($reflectionClass, $instance, $propName, $value);
+            return $instance;
+        } catch (ReflectionException) {
+            throw HydrationException::unknownErrorWhileHydrating();
         }
-
-        return $instance;
     }
 
     private function getPropertyFromReflection(ReflectionClass $reflectionClass, string $propName): ReflectionProperty|null

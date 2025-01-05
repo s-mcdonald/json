@@ -32,4 +32,19 @@ class HydrationException extends RuntimeException
     {
         return new self('Method ' . $getName . ' has too many required parameters.');
     }
+
+    public static function unknownErrorWhileHydrating(): self
+    {
+        return new self('An unknown error occurred while hydrating.');
+    }
+
+    public static function createClassNotExist(string $fqClassName): self
+    {
+        return new self(
+            \sprintf(
+                'Unable to hydrate data: Class %s does not exist',
+                $fqClassName,
+            ),
+        );
+    }
 }

@@ -106,4 +106,13 @@ class HydratorTest extends TestCase
             $hydrated->getAge(),
         );
     }
+
+    public function testHydrateWhenClassNotExist(): void
+    {
+        $this->expectException(HydrationException::class);
+        $this->expectExceptionMessage('Unable to hydrate data: Class Foo\Bar\Baz\Classy does not exist');
+
+        $sut = new Hydrator();
+        $sut->hydrate(["foo" => "bar"],'Foo\Bar\Baz\Classy');
+    }
 }
