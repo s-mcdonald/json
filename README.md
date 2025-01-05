@@ -6,7 +6,7 @@
 ![Master Build Status](https://img.shields.io/github/actions/workflow/status/s-mcdonald/phpjson/php.yml?branch=master&label=master)
 ![Develop Build Status](https://img.shields.io/github/actions/workflow/status/s-mcdonald/phpjson/php.yml?branch=develop&label=develop)
 
-![Coverage](https://coveralls.io/repos/github/s-mcdonald/phpjson/badge.svg?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/s-mcdonald/PHPJson/badge.svg?branch=develop)](https://coveralls.io/github/s-mcdonald/PHPJson?branch=develop)
 
 _A Fast and Lightweight PHP JSON Object Serialization Library._
 
