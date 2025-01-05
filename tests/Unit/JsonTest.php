@@ -448,7 +448,7 @@ JSON
         );
     }
 
-    private static function provideDataForTestJsonIsValid(): array
+    public static function provideDataForTestJsonIsValid(): array
     {
         return [
             'valid json' => [
