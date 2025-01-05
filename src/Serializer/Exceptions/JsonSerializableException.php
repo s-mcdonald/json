@@ -8,4 +8,8 @@ use RuntimeException;
 
 class JsonSerializableException extends RuntimeException
 {
+    public static function hasTooManyJsonProperties(): self
+    {
+        return new self('Cannot serialize object with more than 1 JsonProperty');
+    }
 }

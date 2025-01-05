@@ -9,6 +9,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 
 /**
  * This class needs a lot more work. Its working for now in its current purpose but definitely not
@@ -25,11 +26,11 @@ class JsonPropertyReader
      */
     public function getJsonPropertyName(string $defaultPropertyName, array $attributes): string
     {
-        if (1 === count($attributes)) {
-            return $this->getPropertyName($attributes[0], $defaultPropertyName);
-        }
-
-        return $defaultPropertyName;
+        return match (count($attributes)) {
+            0 => $defaultPropertyName,
+            1 => $this->getPropertyName($attributes[0]->newInstance(), $defaultPropertyName),
+            default => throw JsonSerializableException::hasTooManyJsonProperties(),
+        };
     }
 
     /**
@@ -69,11 +70,8 @@ class JsonPropertyReader
         return null;
     }
 
-    private function getPropertyName(ReflectionAttribute $attribute, string $defaultName): string
+    private function getPropertyName(JsonProperty $jsonProperty, string $defaultName): string
     {
-        $jsonProperty = $attribute->newInstance();
-        assert($jsonProperty instanceof JsonProperty);
-
         $newName = $jsonProperty->getName();
 
         if ($jsonProperty->isNameValid()) {
