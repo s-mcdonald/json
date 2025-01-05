@@ -8,5 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 class SerializerTest extends TestCase
 {
-
+    public function testSerialize(): void
+    {
+        $this->markTestIncomplete('Not yet implemented');
+    }
 }
