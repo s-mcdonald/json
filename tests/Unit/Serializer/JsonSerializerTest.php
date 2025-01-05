@@ -13,7 +13,7 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\NoAttributeClasses\SimpleScalaPrope
 
 #[CoversClass(JsonSerializer::class)]
 #[UsesClass(SimpleScalaProperties::class)]
-class SerializerTest extends TestCase
+class JsonSerializerTest extends TestCase
 {
     public function testConstruct(): void
     {
