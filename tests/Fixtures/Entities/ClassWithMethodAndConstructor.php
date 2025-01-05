@@ -8,7 +8,7 @@ use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 
 class ClassWithMethodAndConstructor
 {
-    #[JsonProperty('userName', deserialize: true)]
+    #[JsonProperty('userName')]
     public string $name;
 
     #[JsonProperty]
