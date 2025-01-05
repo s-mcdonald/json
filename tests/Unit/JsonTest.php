@@ -29,7 +29,6 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 
-
 #[CoversClass(Json::class)]
 #[UsesClass(ParentClassSerializable::class)]
 #[UsesClass(GoodChildObjectSerializable::class)]

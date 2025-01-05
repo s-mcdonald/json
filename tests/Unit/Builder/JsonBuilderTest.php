@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit\Builder;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Builder\JsonBuilder;
 
+#[CoversClass(JsonBuilder::class)]
 class JsonBuilderTest extends TestCase
 {
     public function testAddObjectProperty(): void

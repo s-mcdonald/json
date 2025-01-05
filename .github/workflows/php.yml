@@ -46,4 +46,10 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run tests
-      run: vendor/bin/phpunit --coverage-text --colors=always --stop-on-failure
+      run: vendor/bin/phpunit --coverage-text --coverage-clover=clover.xml --colors=always --stop-on-failure
+
+    - name: Upload to Coveralls
+      uses: coverallsapp/github-action@v2
+      with:
+        path-to-lcov: ./clover.xml
+        github-token: ${{ secrets.GITHUB_TOKEN }}

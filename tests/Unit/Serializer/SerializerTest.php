@@ -7,7 +7,6 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Encoding\JsonDecoder;
 use SamMcDonald\Json\Serializer\Encoding\JsonEncoder;
@@ -17,7 +16,7 @@ use SamMcDonald\Json\Serializer\JsonSerializer;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\ObjectNormalizer;
 use SamMcDonald\Json\Tests\Fixtures\Entities\NoAttributeClasses\SimpleScalaProperties;
 
-#[CoversClass(Json::class)]
+#[CoversClass(JsonSerializer::class)]
 #[UsesClass(ObjectNormalizer::class)]
 #[UsesClass(JsonEncoder::class)]
 #[UsesClass(JsonDecoder::class)]
