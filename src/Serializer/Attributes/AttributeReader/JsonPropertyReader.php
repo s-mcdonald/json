@@ -8,6 +8,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 
 /**
  * This class needs a lot more work. Its working for now in its current purpose but definitely not
@@ -72,10 +73,14 @@ class JsonPropertyReader
     {
         $args = $attribute->getArguments();
 
+        if (0 === count($args)) {
+            return $defaultName;
+        }
+
         $newName = $args[0] ?? $args['name'] ?? null;
 
         if (null === $newName || '' === $newName || str_contains($newName, ' ')) {
-            return $defaultName;
+            throw new JsonSerializableException('Invalid JsonProperty name.');
         }
 
         return $newName;

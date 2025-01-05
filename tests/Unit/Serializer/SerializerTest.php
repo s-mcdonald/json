@@ -7,8 +7,6 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
-use SamMcDonald\Json\Tests\Fixtures\Entities\BadPropertyNamesSerializable;
-use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Fixtures\Entities\GoodChildObjectSerializable;
 use SamMcDonald\Json\Tests\Fixtures\Entities\NestingClasses\Nestable;
 use SamMcDonald\Json\Tests\Fixtures\Entities\NestingClasses\NestableWithArray;
