@@ -11,6 +11,7 @@ use SamMcDonald\Json\Serializer\Encoding\JsonDecoder;
 use SamMcDonald\Json\Serializer\Encoding\JsonEncoder;
 use SamMcDonald\Json\Serializer\Encoding\Validator\JsonValidator;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Contracts\NormalizerInterface;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\ObjectNormalizer;
 
 class JsonSerializer
@@ -18,7 +19,7 @@ class JsonSerializer
     public function __construct(
         private EncoderInterface|null $encoder = null,
         private DecoderInterface|null $decoder = null,
-        private ObjectNormalizer|null $objectNormalizer = null,
+        private NormalizerInterface|null $objectNormalizer = null,
     ) {
         if (null === $this->encoder) {
             $this->encoder = new JsonEncoder(new JsonValidator());
@@ -33,7 +34,7 @@ class JsonSerializer
         }
     }
 
-    public function serialize(object $object, JsonFormat $format = JsonFormat::Compressed): string
+    public function serialize(mixed $object, JsonFormat $format = JsonFormat::Compressed): string
     {
         return $this->encoder->encode($this->objectNormalizer->normalize($object), $format)->getBody();
     }
