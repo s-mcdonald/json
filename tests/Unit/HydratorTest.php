@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit;
 
+use Fixtures\Entities\ContainsSetters\UserWithSetters;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 use SamMcDonald\Json\Serializer\Hydrator;
@@ -60,6 +61,33 @@ class HydratorTest extends TestCase
 
         $hydrated = $sut->hydrate($input, SimplePropertiesNoOverrideClass::class);
         assert($hydrated instanceof SimplePropertiesNoOverrideClass);
+
+        static::assertEquals(
+            $expected,
+            $hydrated,
+        );
+
+        static::assertEquals(
+            'foo-name',
+            $hydrated->getName(),
+        );
+
+        static::assertEquals(
+            44,
+            $hydrated->getAge(),
+        );
+    }
+
+    public function testHydrationToSetterMethod(): void
+    {
+        $expected = new UserWithSetters('foo-name', 44);
+
+        $input = ["name" => "foo-name", "age" => 44 ];
+
+        $sut = new Hydrator();
+
+        $hydrated = $sut->hydrate($input, UserWithSetters::class);
+        assert($hydrated instanceof UserWithSetters);
 
         static::assertEquals(
             $expected,
