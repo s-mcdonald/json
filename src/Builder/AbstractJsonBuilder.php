@@ -53,12 +53,7 @@ abstract class AbstractJsonBuilder
         return (string) $this;
     }
 
-    protected function getArray(): array
-    {
-        return $this->jsonProperties;
-    }
-
-    protected function removeProp(string $prop): self
+    public function removeProperty(string $prop): self
     {
         unset($this->jsonProperties[$prop]);
 

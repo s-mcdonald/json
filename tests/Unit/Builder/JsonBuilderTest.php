@@ -11,6 +11,59 @@ use SamMcDonald\Json\Builder\JsonBuilder;
 #[CoversClass(JsonBuilder::class)]
 class JsonBuilderTest extends TestCase
 {
+    public function testRemoveProperty(): void
+    {
+        $original = <<<JSON
+{
+    "foo": 12345.678,
+    "bar": null
+}
+JSON;
+
+        $expected = <<<JSON
+{
+    "foo": 12345.678
+}
+JSON;
+
+        $sut = JsonBuilder::createFromJson($original);
+
+        self::assertEquals(
+            $expected,
+            (string)$sut->removeProperty("bar")
+        );
+    }
+
+    public function testCreateFromJson(): void
+    {
+        $expected = <<<JSON
+{
+    "foo": null
+}
+JSON;
+        self::assertEquals(
+            $expected,
+            (string)JsonBuilder::createFromJson('{"foo": null}')
+        );
+    }
+
+    public function testAddNullProperty(): void
+    {
+        $sut = $this->createBuilder();
+        $expected = <<<JSON
+{
+    "foo": null
+}
+JSON;
+
+        $sut->addNullProperty("foo");
+
+        self::assertEquals(
+            $expected,
+            ((string) $sut)
+        );
+    }
+
     public function testAddObjectProperty(): void
     {
         $sut = $this->createBuilder();
@@ -100,26 +153,6 @@ JSON;
 JSON;
 
         $sut->addProperty("foo", 12345.678);
-
-        self::assertEquals(
-            $expected,
-            ((string) $sut)
-        );
-    }
-
-    public function testAddNullProperty(): void
-    {
-        $sut = $this->createBuilder();
-
-        $expected = <<<JSON
-{
-    "foo": 12345.678,
-    "bar": null
-}
-JSON;
-
-        $sut->addProperty("foo", 12345.678);
-        $sut->addProperty("bar", null);
 
         self::assertEquals(
             $expected,
