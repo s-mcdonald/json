@@ -10,14 +10,18 @@ use Attribute;
 class JsonProperty
 {
     public function __construct(
-        private string|null $name = null,
-        private bool $deserialize = false,
+        private string|null $name = null
     ) {
     }
 
     public function isNameValid(): bool
     {
         return self::getHasValidName($this->name);
+    }
+
+    public function getName(): string|null
+    {
+        return $this->name;
     }
 
     public static function getHasValidName(string|null $propertyName): bool
@@ -34,20 +38,10 @@ class JsonProperty
             return false;
         }
 
-        if (!preg_match('/^[a-zA-Z]{1}[a-zA-Z0-9-_]*$/', $propertyName)) {
+        if (!preg_match('/^[a-zA-Z]{1}[a-zA-Z0-9_]*$/', $propertyName)) {
             return false;
         }
 
         return true;
-    }
-
-    public function getName(): string|null
-    {
-        return $this->name;
-    }
-
-    public function getDeserialize(): bool
-    {
-        return $this->deserialize;
     }
 }
