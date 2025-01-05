@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 use InvalidArgumentException;
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionEnum;
 use ReflectionException;
@@ -22,13 +21,14 @@ use stdClass;
 use TypeError;
 
 /**
- * Normalize from object to stdClass.
+ * Normalize object properties to stdClass. Similar to ObjectNormalizer however
+ * this simply takes all properties of an object and does
+ * not deal with Attributes or methods.
  */
 final readonly class EntityNormalizer implements NormalizerInterface
 {
     public function __construct(
         private JsonPropertyReader $propertyReader,
-        private array|null $mapping = null,
     ) {
     }
 
@@ -47,21 +47,6 @@ final readonly class EntityNormalizer implements NormalizerInterface
     }
 
     private function transferToJsonBuilder(object $propertyValue): JsonBuilder
-    {
-        if (null === $this->mapping) {
-            return $this->mapWithReflectionOnly($propertyValue);
-        }
-
-        // now map with mapping
-        $jsonBuilder = new JsonBuilder();
-        $contextBuilder = new ContextBuilder($this->propertyReader);
-        foreach ($this->mapping as $property => $value) {
-        }
-
-        return $jsonBuilder;
-    }
-
-    private function mapWithReflectionOnly(object $propertyValue): JsonBuilder
     {
         $jsonBuilder = new JsonBuilder();
         $contextBuilder = new ContextBuilder($this->propertyReader);
@@ -82,17 +67,14 @@ final readonly class EntityNormalizer implements NormalizerInterface
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        if (false === $this->isSerializable($propertyValue)) {
             return;
         }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
-    /**
-     * @param array<ReflectionAttribute> $attributes
-     */
-    private function isSerializable($propertyValue, array $attributes): bool
+    private function isSerializable($propertyValue): bool
     {
         return null === $propertyValue
             || is_scalar($propertyValue)

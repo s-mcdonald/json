@@ -23,7 +23,8 @@ use stdClass;
 use TypeError;
 
 /**
- * Normalize from object to stdClass.
+ * Normalize from object to stdClass. This includes Serializable methods with the
+ * use of Attributes.
  */
 final readonly class ObjectNormalizer implements NormalizerInterface
 {
