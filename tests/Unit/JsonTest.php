@@ -7,6 +7,8 @@ namespace SamMcDonald\Json\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Tests\Fixtures\Entities\BadPropertyNamesSerializable;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPrivateStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
@@ -14,6 +16,32 @@ use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 
 class JsonTest extends TestCase
 {
+    /**
+     * When a bad name is presented default to the property name.
+     */
+    public function testSerializeWithBadPropertyName(): void
+    {
+        $sut = new BadPropertyNamesSerializable();
+        $sut->name = 'foo';
+
+        static::assertEquals(
+            '{"name":"foo"}',
+            Json::serialize($sut),
+        );
+    }
+
+    public function testSerializeWithConstructorPrivatePropertySerialized(): void
+    {
+        $sut = new ClassWithMethodAndConstructor(1234);
+        $sut->name = 'foo';
+        $sut->phoneNumbers = ['1234', '5678'];
+
+        static::assertEquals(
+            '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":1234}',
+            Json::serialize($sut),
+        );
+    }
+
     /**
      * This test SHOULD throw an exception, as we have explicitly declared that a specific
      * property should be serialized. If the property is not annotated with

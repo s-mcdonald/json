@@ -21,32 +21,6 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
  */
 class SerializerTest extends TestCase
 {
-    public function testSerialize(): void
-    {
-        $sut = new ClassWithMethodAndConstructor(1234);
-        $sut->name = 'foo';
-        $sut->phoneNumbers = ['1234', '5678'];
-
-        static::assertEquals(
-            '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":1234}',
-            Json::serialize($sut),
-        );
-    }
-
-    /**
-     * When a bad name is presented default to the property name.
-     */
-    public function testSerializeWithBadPropertyNames(): void
-    {
-        $sut = new BadPropertyNamesSerializable();
-        $sut->name = 'foo';
-
-        static::assertEquals(
-            '{"name":"foo"}',
-            Json::serialize($sut),
-        );
-    }
-
     public function testSerializeWithChildClass(): void
     {
         $sut = new ParentClassSerializable(123, '123 Fake Address');
