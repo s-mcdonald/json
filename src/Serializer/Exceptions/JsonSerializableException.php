@@ -12,4 +12,9 @@ class JsonSerializableException extends RuntimeException
     {
         return new self('Cannot serialize object with more than 1 JsonProperty');
     }
+
+    public static function unableToDecode(): self
+    {
+        return new self('Unable to decode json');
+    }
 }
