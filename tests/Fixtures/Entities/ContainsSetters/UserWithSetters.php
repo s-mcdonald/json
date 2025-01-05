@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fixtures\Entities\ContainsSetters;
+namespace SamMcDonald\Json\Tests\Fixtures\Entities\ContainsSetters;
 
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 

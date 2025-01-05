@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit;
 
-use Fixtures\Entities\ContainsSetters\UserWithSetters;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 use SamMcDonald\Json\Serializer\Hydrator;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ContainsSetters\UserWithSetters;
 use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertiesNoOverrideClass;
 
 class HydratorTest extends TestCase
