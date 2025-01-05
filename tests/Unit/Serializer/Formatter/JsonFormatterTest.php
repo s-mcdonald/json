@@ -7,9 +7,8 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer\Formatter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
-use SamMcDonald\Json\Serializer\JsonSerializer;
 
-#[CoversClass(JsonSerializer::class)]
+#[CoversClass(JsonFormatter::class)]
 class JsonFormatterTest extends TestCase
 {
     public function testPretty(): void

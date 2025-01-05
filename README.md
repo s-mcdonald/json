@@ -294,6 +294,10 @@ composer require s-mcdonald/phpjson
 
 ## Dependencies
 
+*  None
+
+## PHP Versions
+
 *  PHP 8.2, 8.3, 8.4
 
 ## License
