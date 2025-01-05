@@ -9,6 +9,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
+use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 use SamMcDonald\Json\Serializer\Hydration\HydrationConfiguration;
 use SamMcDonald\Json\Serializer\Hydration\HydrationTypeMap;
@@ -40,23 +41,12 @@ final class Hydrator
         $instance = $reflectionClass->newInstanceWithoutConstructor();
 
         foreach ($object as $propName => $value) {
-            if (false === is_string($propName)) {
-                throw HydrationException::createHydrationParseWithBadPropertyNameException();
-            }
-            $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
-            if (null === $reflectionProperty) {
+            if ($method = $this->reader->findMethodWithJsonProperty($reflectionClass, $propName)) {
+                $method->invoke($instance, $value);
                 continue;
             }
 
-            $assignType = HydrationTypeMap::get($reflectionProperty->getType()?->getName());
-            if ($assignType !== gettype($value)) {
-                if (false === $this->config->propertyHydrationTypeStrictMode) {
-                    // can we cast between types
-                }
-                throw HydrationException::createHydrationParseTypeException(gettype($value), $assignType);
-            }
-
-            $reflectionProperty->setValue($instance, $value);
+            $this->attemptHydratePopoProperty($reflectionClass, $instance, $propName, $value);
         }
 
         return $instance;
@@ -73,5 +63,48 @@ final class Hydrator
         }
 
         return null;
+    }
+
+    private function methodHydrationCheck($reflectionClass, $methodName): void
+    {
+        foreach ($reflectionClass->getMethods() as $reflectionMethod) {
+            if ($reflectionMethod->isStatic()) {
+                continue;
+            }
+            if (0 === count($reflectionMethod->getParameters())) {
+                continue;
+            }
+            $reflectedAttributes = $reflectionMethod->getAttributes(JsonProperty::class);
+            if ([] === $reflectedAttributes) {
+                continue;
+            }
+            if (count($reflectedAttributes) > 1) {
+                throw HydrationException::createMethodHasTooManyJsonProperties($reflectionMethod->getName());
+            }
+            if ($reflectionMethod->getNumberOfRequiredParameters() > 1) {
+                throw HydrationException::createTooManyRequiredParameters($reflectionMethod->getName());
+            }
+        }
+    }
+
+    private function attemptHydratePopoProperty(ReflectionClass $reflectionClass, $instance, int|string $propName, mixed $value): void
+    {
+        if (false === is_string($propName)) {
+            throw HydrationException::createHydrationParseWithBadPropertyNameException();
+        }
+        $reflectionProperty = $this->getPropertyFromReflection($reflectionClass, $propName);
+        if (null === $reflectionProperty) {
+            return;
+        }
+
+        $assignType = HydrationTypeMap::get($reflectionProperty->getType()?->getName());
+        if ($assignType !== gettype($value)) {
+            if (false === $this->config->propertyHydrationTypeStrictMode) {
+                // can we cast between types
+            }
+            throw HydrationException::createHydrationParseTypeException(gettype($value), $assignType);
+        }
+
+        $reflectionProperty->setValue($instance, $value);
     }
 }
