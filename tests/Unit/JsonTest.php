@@ -8,15 +8,212 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPrivateStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
+use SamMcDonald\Json\Tests\Fixtures\Entities\GoodChildObjectSerializable;
+use SamMcDonald\Json\Tests\Fixtures\Entities\NestingClasses\Nestable;
+use SamMcDonald\Json\Tests\Fixtures\Entities\NestingClasses\NestableWithArray;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ParentClassSerializable;
+use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertiesNoOverrideClass;
+use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 
 class JsonTest extends TestCase
 {
+    public function testSerializeWithBasicNestingClass(): void
+    {
+        $sut = new ParentClassSerializable(123, '123 Fake Address');
+        $sut->name = 'foo';
+        $sut->phoneNumbers = [1234, 5678];
+        $sut->child = new GoodChildObjectSerializable("fubar");
+
+        $expectedJson = <<<JSON
+{
+    "userName": "foo",
+    "phoneNumbers": [
+        1234,
+        5678
+    ],
+    "child": {
+        "childProp1": "fubar",
+        "childProp2": null
+    },
+    "userAddress": "123 Fake Address",
+    "creditCard": 123
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testSerializeWithNestingClassWithinNestedClass(): void
+    {
+        $sut = new ParentClassSerializable(123, '123 Fake Address');
+        $sut->name = 'foo';
+        $sut->phoneNumbers = [1234, 5678];
+        $sut->child = new GoodChildObjectSerializable("fubar");
+        $sut->child->childProperty2 = new GoodChildObjectSerializable("deep in the woods");
+
+        $expectedJson = <<<JSON
+{
+    "userName": "foo",
+    "phoneNumbers": [
+        1234,
+        5678
+    ],
+    "child": {
+        "childProp1": "fubar",
+        "childProp2": {
+            "childProp1": "deep in the woods",
+            "childProp2": null
+        }
+    },
+    "userAddress": "123 Fake Address",
+    "creditCard": 123
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testSerializeWithDeepNestingClassesWithinNestedClass(): void
+    {
+        $sut = new Nestable();
+
+        $sut->objVal = new Nestable();
+        $sut->objVal->intVal = 456;
+        $sut->objVal->objVal = new Nestable();
+        $sut->objVal->objVal->objVal = new Nestable();
+        $sut->objVal->objVal->intVal = 999;
+        $sut->objVal->objVal->objVal->objVal = new Nestable();
+
+        $expectedJson = <<<JSON
+{
+    "intVal": 123,
+    "stringVal": "foo",
+    "objVal": {
+        "intVal": 456,
+        "stringVal": "foo",
+        "objVal": {
+            "intVal": 999,
+            "stringVal": "foo",
+            "objVal": {
+                "intVal": 123,
+                "stringVal": "foo",
+                "objVal": {
+                    "intVal": 123,
+                    "stringVal": "foo",
+                    "objVal": null
+                }
+            }
+        }
+    }
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testSerializeWithArray(): void
+    {
+        $sut = new NestableWithArray();
+
+        $sut->arrayVal = [false, true, null, 1, 2, 3, ["a", "b"]];
+
+        $expectedJson = <<<JSON
+{
+    "arrayVal": [
+        false,
+        true,
+        null,
+        1,
+        2,
+        3,
+        [
+            "a",
+            "b"
+        ]
+    ],
+    "intVal": 123,
+    "stringVal": "foo",
+    "objVal": null
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
+    public function testSerializationNestedObjectInArrays(): void
+    {
+        $sut = new NestableWithArray();
+
+        $nestA = new Nestable();
+        $nestA->stringVal = "arrayitem";
+
+        $sut->arrayVal = [$nestA, 1, "fubar", true];
+
+        $sut->objVal = new Nestable();
+        $sut->objVal->intVal = 456;
+        $sut->objVal->objVal = new Nestable();
+        $sut->objVal->objVal->objVal = new Nestable();
+
+        $expectedJson = <<<JSON
+{
+    "arrayVal": [
+        {
+            "intVal": 123,
+            "stringVal": "arrayitem",
+            "objVal": null
+        },
+        1,
+        "fubar",
+        true
+    ],
+    "intVal": 123,
+    "stringVal": "foo",
+    "objVal": {
+        "intVal": 456,
+        "stringVal": "foo",
+        "objVal": {
+            "intVal": 123,
+            "stringVal": "foo",
+            "objVal": {
+                "intVal": 123,
+                "stringVal": "foo",
+                "objVal": null
+            }
+        }
+    }
+}
+JSON
+        ;
+
+        static::assertEquals(
+            $expectedJson,
+            Json::serialize($sut, JsonFormat::Pretty),
+        );
+    }
+
     /**
      * When a bad name is presented in the JsonProperty we should throw an exception
      * to alert the developer|user to fix or resolve the issue.
@@ -71,6 +268,68 @@ class JsonTest extends TestCase
         static::assertEquals(
             '{"userName":"foo","phoneNumbers":["1234","5678"],"creditCard":1234}',
             Json::serialize($sut),
+        );
+    }
+
+    public function testDeserializeHydration(): void
+    {
+        $expected = new SimplePropertiesNoOverrideClass('foo-name', 44);
+
+        $json = <<<JSON
+{
+  "name": "foo-name", 
+  "age": 44
+}
+JSON
+        ;
+
+        $hydrated = Json::deserialize($json, SimplePropertiesNoOverrideClass::class);
+        assert($hydrated instanceof SimplePropertiesNoOverrideClass);
+
+        static::assertEquals(
+            $expected,
+            $hydrated,
+        );
+
+        static::assertEquals(
+            'foo-name',
+            $hydrated->getName(),
+        );
+
+        static::assertEquals(
+            44,
+            $hydrated->getAge(),
+        );
+    }
+
+    public function testDeserializeHydrationWithPropertyOverride(): void
+    {
+        $expected = new SimplePropertyClass("myusername", 44);
+
+        $json = <<<JSON
+{
+  "userName": "myusername", 
+  "age": 44
+}
+JSON
+        ;
+
+        $hydrated = Json::deserialize($json, SimplePropertyClass::class);
+        assert($hydrated instanceof SimplePropertyClass);
+
+        static::assertEquals(
+            $expected,
+            $hydrated,
+        );
+
+        static::assertEquals(
+            'myusername',
+            $hydrated->getName(),
+        );
+
+        static::assertEquals(
+            44,
+            $hydrated->getAge(),
         );
     }
 
