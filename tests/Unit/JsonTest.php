@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Tests\Unit;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Json;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
+use SamMcDonald\Json\Serializer\JsonSerializer;
+use SamMcDonald\Json\Serializer\Transformer\JsonUtilities;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithMethodAndConstructor;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPrivateStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
@@ -23,6 +29,14 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertyClass;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyBackedEnum;
 use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 
+
+#[CoversClass(Json::class)]
+#[UsesClass(ParentClassSerializable::class)]
+#[UsesClass(GoodChildObjectSerializable::class)]
+#[UsesClass(JsonSerializer::class)]
+#[UsesClass(JsonBuilder::class)]
+#[UsesClass(JsonFormatter::class)]
+#[UsesClass(JsonUtilities::class)]
 class JsonTest extends TestCase
 {
     public function testSerializeWithBasicNestingClass(): void
@@ -490,5 +504,22 @@ JSON
 
         static::assertEquals([], $builder->toArray());
         static::assertEquals(new \stdClass(), $builder->toStdClass());
+    }
+
+    public function testPush(): void
+    {
+        $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}]}';
+
+        $array = Json::push($json, "foo");
+
+        static::assertIsArray($array);
+        static::assertCount(4, $array);
+        static::assertEquals('bar', $array['name']);
+        static::assertEquals(19, $array['age']);
+        static::assertTrue($array['isActive']);
+        static::assertIsArray($array['children']);
+        static::assertCount(2, $array['children']);
+        static::assertEquals('child1', $array['children'][0]['name']);
+        static::assertEquals('child2', $array['children'][1]['name']);
     }
 }

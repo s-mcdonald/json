@@ -25,14 +25,14 @@ class JsonUtilities
         return (new JsonToArrayDecoder())->decode($json)->isValid();
     }
 
-    public function push(string $json, mixed $item): string|false
+    public function push(string $json, string $key, mixed $item): string|false
     {
         $package = (new JsonToArrayDecoder())->decode($json);
         if (false === $package->isValid()) {
             return false;
         }
         $decodedData = $package->getBody();
-        $decodedData[] = $item;
+        $decodedData[$key] = $item;
 
         $package = (new ArrayToJsonEncoder())->encode($decodedData);
 

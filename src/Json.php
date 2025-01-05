@@ -51,12 +51,9 @@ final class Json
         return (new JsonUtilities())->isValid($json);
     }
 
-    /**
-     * @todo: needs tests
-     */
-    public static function push(string $json, mixed $item): string|false
+    public static function push(string $json, string $key, mixed $item): string|false
     {
-        return (new JsonUtilities())->push($json, $item);
+        return (new JsonUtilities())->push($json, $key, $item);
     }
 
     /**
