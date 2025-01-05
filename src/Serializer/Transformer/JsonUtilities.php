@@ -8,6 +8,9 @@ use SamMcDonald\Json\Serializer\Encoding\Components\ArrayToJsonEncoder;
 use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
 use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 
+/**
+ * @deprecated
+ */
 class JsonUtilities
 {
     public function prettify(string $json): string

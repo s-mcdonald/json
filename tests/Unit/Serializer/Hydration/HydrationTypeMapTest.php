@@ -21,11 +21,9 @@ class HydrationTypeMapTest extends TestCase
             'array' => 'array',
             'object' => 'object',
             'null' => 'NULL',
-            'resource' => 'resource',
-            'mixed' => 'unknown type',
         ];
 
-        static::assertEquals(HydrationTypeMap::TYPE_MAP, $map);
+        static::assertEquals(HydrationTypeMap::VALID_TYPE_HINT_MAP, $map);
     }
 
     public function testGet(): void
@@ -56,7 +54,7 @@ class HydrationTypeMapTest extends TestCase
         );
 
         static::assertEquals(
-            'resource',
+            'mixed',
             HydrationTypeMap::get('resource')
         );
 
@@ -66,7 +64,7 @@ class HydrationTypeMapTest extends TestCase
         );
 
         static::assertEquals(
-            'unknown type',
+            'mixed',
             HydrationTypeMap::get('mixed')
         );
     }

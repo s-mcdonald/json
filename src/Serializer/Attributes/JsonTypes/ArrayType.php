@@ -8,18 +8,18 @@ use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 class ArrayType extends JsonType
 {
-    public function __construct()
-    {
-        parent::__construct('array');
-    }
-
     public function getPhpType(): string
     {
         return 'array';
     }
 
-    public function getCastType(): string
+    public function getCompatibleCastTypes(): array
     {
-        return 'array';
+        return ['array', 'object'];
+    }
+
+    final protected function cast($value): array
+    {
+        return (array) $value;
     }
 }

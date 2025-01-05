@@ -8,18 +8,18 @@ use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 class DoubleType extends JsonType
 {
-    public function __construct()
-    {
-        parent::__construct('double');
-    }
-
     public function getPhpType(): string
     {
-        return 'float';
+        return 'double';
     }
 
-    public function getCastType(): string
+    public function getCompatibleCastTypes(): array
     {
-        return 'float';
+        return ['double', 'integer', 'string', 'boolean'];
+    }
+
+    final protected function cast($value): float
+    {
+        return (float) $value;
     }
 }

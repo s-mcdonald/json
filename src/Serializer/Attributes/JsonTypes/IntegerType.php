@@ -8,18 +8,18 @@ use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 class IntegerType extends JsonType
 {
-    public function __construct()
-    {
-        parent::__construct('integer');
-    }
-
     public function getPhpType(): string
     {
-        return 'int';
+        return 'integer';
     }
 
-    public function getCastType(): string
+    public function getCompatibleCastTypes(): array
     {
-        return 'int';
+        return ['double', 'integer', 'string', 'boolean'];
+    }
+
+    final protected function cast($value): int
+    {
+        return (int) $value;
     }
 }

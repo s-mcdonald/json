@@ -8,18 +8,18 @@ use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 class BooleanType extends JsonType
 {
-    public function __construct()
-    {
-        parent::__construct('boolean');
-    }
-
     public function getPhpType(): string
     {
-        return 'bool';
+        return 'boolean';
     }
 
-    public function getCastType(): string
+    public function getCompatibleCastTypes(): array
     {
-        return 'bool';
+        return ['boolean', 'integer', 'string', 'NULL'];
+    }
+
+    final protected function cast($value): bool
+    {
+        return (bool) $value;
     }
 }

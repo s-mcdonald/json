@@ -8,18 +8,18 @@ use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 class NullType extends JsonType
 {
-    public function __construct()
-    {
-        parent::__construct('null');
-    }
-
     public function getPhpType(): string
     {
         return 'NULL';
     }
 
-    public function getCastType(): string
+    public function getCompatibleCastTypes(): array
     {
-        return 'NULL';
+        return ['NULL', 'boolean'];
+    }
+
+    final protected function cast($value): null
+    {
+        return null;
     }
 }
