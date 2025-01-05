@@ -306,3 +306,4 @@ Json is licensed under the terms of the [MIT License](http://opensource.org/lice
 
 Check out the issues section to get started.
 
+[![Sponsor](https://img.shields.io/badge/Sponsor-❤-ff69b4)](https://github.com/sponsors/s-mcdonald)
