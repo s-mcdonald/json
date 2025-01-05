@@ -51,11 +51,17 @@ final class Json
         return (new JsonUtilities())->isValid($json);
     }
 
+    /**
+     * @todo: needs tests
+     */
     public static function push(string $json, mixed $item): string|false
     {
         return (new JsonUtilities())->push($json, $item);
     }
 
+    /**
+     * @todo: needs tests
+     */
     public static function remove(string $json, string $property): string|false
     {
         return (new JsonUtilities())->remove($json, $property);

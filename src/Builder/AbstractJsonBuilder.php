@@ -6,6 +6,7 @@ namespace SamMcDonald\Json\Builder;
 
 use Exception;
 use InvalidArgumentException;
+use SamMcDonald\Json\Serializer\Encoding\Components\JsonToStdClassDecoder;
 use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 use stdClass;
 
@@ -32,7 +33,7 @@ abstract class AbstractJsonBuilder
     public function toStdClass(): stdClass
     {
         try {
-            return json_decode((string) $this, false, 512, JSON_THROW_ON_ERROR);
+            return (new JsonToStdClassDecoder())->decode((string) $this)->getBody();
         } catch (Exception $e) {
             throw new JsonException($e->getMessage());
         }

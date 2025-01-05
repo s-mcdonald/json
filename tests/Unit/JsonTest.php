@@ -437,6 +437,31 @@ JSON
         );
     }
 
+    /**
+     * @dataProvider provideDataForTestJsonIsValid
+     */
+    public function testJsonIsValid(string $json, bool $valid): void
+    {
+        static::assertEquals(
+            $valid,
+            Json::isValid($json),
+        );
+    }
+
+    private static function provideDataForTestJsonIsValid(): array
+    {
+        return [
+            'valid json' => [
+                '{"name":"bar"}',
+                true,
+            ],
+            'invalid json' => [
+                '{"name":"bar"',
+                false,
+            ],
+        ];
+    }
+
     public function testToArray(): void
     {
         $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}]}';
@@ -447,7 +472,7 @@ JSON
         static::assertCount(4, $array);
         static::assertEquals('bar', $array['name']);
         static::assertEquals(19, $array['age']);
-        static::assertEquals(true, $array['isActive']);
+        static::assertTrue($array['isActive']);
         static::assertIsArray($array['children']);
         static::assertCount(2, $array['children']);
         static::assertEquals('child1', $array['children'][0]['name']);
@@ -462,5 +487,13 @@ JSON
         $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}';
         $array = Json::toArray($json);
         static::assertFalse($array);
+    }
+
+    public function testCreateJsonBuilder(): void
+    {
+        $builder = Json::createJsonBuilder();
+
+        static::assertEquals([], $builder->toArray());
+        static::assertEquals(new \stdClass(), $builder->toStdClass());
     }
 }
