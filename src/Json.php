@@ -10,13 +10,20 @@ use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 use SamMcDonald\Json\Serializer\JsonSerializer;
 use SamMcDonald\Json\Serializer\Transformer\JsonUtilities;
 
-/**
- * @todo: need some refactoring so we can hold onto an instance of each service.
- */
 final class Json
 {
-    private function __construct()
+    private function __construct(private string $json)
     {
+    }
+
+    public function toPretty(): string
+    {
+        return self::prettify($this->json);
+    }
+
+    public static function createFromString(string $json): self
+    {
+        return new self($json);
     }
 
     public static function serialize(

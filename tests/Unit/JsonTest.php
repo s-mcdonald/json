@@ -39,6 +39,12 @@ use SamMcDonald\Json\Tests\Fixtures\Enums\MyEnum;
 #[UsesClass(JsonUtilities::class)]
 class JsonTest extends TestCase
 {
+    public function testForbiddenConstruction(): void
+    {
+        $sut = Json::createFromString('{"foo":"bar"}');
+        static::assertInstanceOf(Json::class, $sut);
+    }
+
     public function testSerializeWithBasicNestingClass(): void
     {
         $sut = new ParentClassSerializable(123, '123 Fake Address');
@@ -408,10 +414,29 @@ JSON
         );
     }
 
+    public function testPretty(): void
+    {
+        $jsonUgly = '{"name":"bar"}';
+
+        $jsonPretty = <<<JSON
+{
+    "name": "bar"
+}
+JSON
+        ;
+
+        $sut = Json::createFromString($jsonUgly);
+
+        static::assertEquals(
+            $jsonPretty,
+            $sut->toPretty(),
+        );
+    }
+
     /**
      * Test the formatting on the Json::facade
      */
-    public function testPrettify(): void
+    public function testJsonPrettify(): void
     {
         $jsonUgly = '{"name":"bar"}';
 
