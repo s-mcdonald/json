@@ -6,28 +6,11 @@ namespace SamMcDonald\Json\Tests\Unit\Serializer\Transformer;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use SamMcDonald\Json\Serializer\Encoding\Components\ArrayToJsonEncoder;
-use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
-use SamMcDonald\Json\Serializer\Formatter\JsonFormatter;
 use SamMcDonald\Json\Serializer\Transformer\JsonUtilities;
 
 #[CoversClass(JsonUtilities::class)]
 class JsonUtilitiesTest extends TestCase
 {
-    private JsonUtilities $jsonUtilities;
-    private JsonFormatter $jsonFormatterMock;
-    private JsonToArrayDecoder $jsonToArrayDecoderMock;
-    private ArrayToJsonEncoder $arrayToJsonEncoderMock;
-
-    protected function setUp(): void
-    {
-
-        $this->jsonToArrayDecoderMock = new JsonToArrayDecoder();
-        $this->arrayToJsonEncoderMock = new ArrayToJsonEncoder();
-
-        $this->jsonUtilities = new JsonUtilities();
-    }
-
     public function testPrettify(): void
     {
         $json = '{"key":"value"}';
@@ -104,7 +87,7 @@ JSON
 
         static::assertEquals(
             $expectedJson,
-            $this->jsonUtilities->remove($json, $property)
+            (new JsonUtilities())->remove($json, $property)
         );
     }
 }
