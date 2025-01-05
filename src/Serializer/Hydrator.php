@@ -50,6 +50,9 @@ final class Hydrator
 
             $assignType = HydrationTypeMap::get($reflectionProperty->getType()?->getName());
             if ($assignType !== gettype($value)) {
+                if (false === $this->config->propertyHydrationTypeStrictMode) {
+                    // can we cast between types
+                }
                 throw HydrationException::createHydrationParseTypeException(gettype($value), $assignType);
             }
 

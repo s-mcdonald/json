@@ -11,6 +11,22 @@ use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertiesNoOverrideClass;
 
 class HydratorTest extends TestCase
 {
+    public function testHydrationWithTypeDifferenceWithNonStrict(): void
+    {
+        $this->markTestSkipped('Feature not yet implemented.');
+
+        $input = ["name" => "foo-name", "age" =>  '44' ];
+        $expected = new SimplePropertiesNoOverrideClass('foo-name', 44);
+
+        $sut = new Hydrator();
+        $hydrated = $sut->hydrate($input, SimplePropertiesNoOverrideClass::class);
+
+        static::assertEquals(
+            $expected,
+            $hydrated,
+        );
+    }
+
     public function testHydrationFailureWithTypeDifference(): void
     {
         $this->expectException(HydrationException::class);
