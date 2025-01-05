@@ -28,7 +28,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SamMcDonald\\Json\\Tests\\": "tests/"
+            "SamMcDonald\\Json\\Tests\\": "tests/",
+            "SamMcDonald\\Json\\Tests\\Unit\\": "tests/Unit",
+            "SamMcDonald\\Json\\Tests\\Fixtures\\": "tests/Fixtures"
         }
     },
     "scripts": {
