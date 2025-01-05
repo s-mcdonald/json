@@ -82,7 +82,7 @@ class HydratorTest extends TestCase
     {
         $expected = new UserWithSetters('foo-name', 44);
 
-        $input = ["name" => "foo-name", "age" => 44 ];
+        $input = ["userName" => "foo-name", "age" => 44 ];
 
         $sut = new Hydrator();
 

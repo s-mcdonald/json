@@ -24,13 +24,13 @@ class UserWithSetters
     }
 
     #[JsonProperty('userName')]
-    public function setName(string $name): string
+    public function setName(string $name): void
     {
-        return $this->notMatchingName = $name;
+        $this->notMatchingName = $name;
     }
 
     #[JsonProperty('age')]
-    public function setAge(int $age): int
+    public function setAge(int $age): void
     {
         $this->notMatchingAge = $age;
     }
