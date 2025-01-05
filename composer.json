@@ -1,15 +1,12 @@
 {
     "name": "s-mcdonald/phpjson",
-    "description": "PHPJson: A fast and modern JSON Library",
-    "type": "project",
+    "description": "PHPJson: An elegant and simple JSON object serialization library for PHP.",
+    "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
-        "ext-ctype": "*",
-        "ext-iconv": "*",
-        "ext-pdo": "*"
+        "php": "^8.2"
     },
     "require-dev": {
         "mockery/mockery": "1.6.12",
@@ -33,7 +30,11 @@
             "SamMcDonald\\Json\\Tests\\Fixtures\\": "tests/Fixtures"
         }
     },
+    "exclude-from-classmap": [
+        "/tests/"
+    ],
     "scripts": {
+        "test": "vendor/bin/phpunit --configuration ./phpunit.xml",
         "build": [
             "composer dumpautoload",
             "composer update",
