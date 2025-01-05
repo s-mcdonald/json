@@ -32,12 +32,16 @@
         }
     },
     "scripts": {
-        "test": "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text --colors=always",
+        "test": "XDEBUG_MODE=coverage php vendor/bin/phpunit --colors=always",
+        "test:coverage": "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text --colors=always",
+        "test:detail": "XDEBUG_MODE=coverage php vendor/bin/phpunit --colors=always --testdox",
         "build": [
+            "composer clearcache",
             "composer dumpautoload",
             "composer update",
             "composer install",
-            "@clean"
+            "@clean",
+            "@test:detail"
         ],
         "clean:csf:check": "./dev/bin/php-cs-fixer check --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
         "clean:csf:fix": "./dev/bin/php-cs-fixer fix --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
