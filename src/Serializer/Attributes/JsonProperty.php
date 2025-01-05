@@ -10,7 +10,7 @@ use Attribute;
 class JsonProperty
 {
     public function __construct(
-        private string|null $name = null
+        private string|null $name = null,
     ) {
     }
 
