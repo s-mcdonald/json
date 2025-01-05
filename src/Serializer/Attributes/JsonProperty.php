@@ -15,8 +15,25 @@ class JsonProperty
     ) {
     }
 
-    public static function getHasValidName(string $propertyName): bool
+    public function isNameValid(): bool
     {
+        return self::getHasValidName($this->name);
+    }
+
+    public static function getHasValidName(string|null $propertyName): bool
+    {
+        if (null === $propertyName) {
+            return true;
+        }
+
+        if (str_contains($propertyName, ' ')) {
+            return false;
+        }
+
+        if ('' === $propertyName) {
+            return false;
+        }
+
         if (!preg_match('/^[a-zA-Z]{1}[a-zA-Z0-9-_]*$/', $propertyName)) {
             return false;
         }
