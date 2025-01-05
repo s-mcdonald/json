@@ -56,9 +56,6 @@ final class Json
         return (new JsonUtilities())->push($json, $key, $item);
     }
 
-    /**
-     * @todo: needs tests
-     */
     public static function remove(string $json, string $property): string|false
     {
         return (new JsonUtilities())->remove($json, $property);

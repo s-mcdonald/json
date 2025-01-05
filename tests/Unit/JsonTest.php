@@ -529,4 +529,19 @@ JSON;
 
         static::assertEquals($expected, Json::push($json, "foo", "foovalue"));
     }
+
+    public function testRemove(): void
+    {
+        $json = '{"name":"bar","age":19, "isActive":true, "children": [{"name":"child1"},{"name":"child2"}]}';
+
+        $expected = <<<JSON
+{
+    "name": "bar",
+    "age": 19,
+    "isActive": true
+}
+JSON;
+
+        static::assertEquals($expected, Json::remove($json, "children"));
+    }
 }
