@@ -47,6 +47,5 @@ final class EntityNormalizer extends AbstractClassNormalizer
 
     protected function processMethod(Context $context): void
     {
-        //
     }
 }

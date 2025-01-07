@@ -11,6 +11,16 @@ namespace SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts;
  */
 abstract class JsonType
 {
+    final public const JSON_TYPES = [
+        'integer',
+        'double',
+        'boolean',
+        'string',
+        'array',
+        'object',
+        'null',
+    ];
+
     protected const SYSTEM_TYPE_MAP = [
         'int' => 'integer',
         'float' => 'double',

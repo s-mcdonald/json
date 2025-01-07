@@ -6,12 +6,17 @@ namespace SamMcDonald\Json\Builder;
 
 use Exception;
 use InvalidArgumentException;
+use SamMcDonald\Json\Schema\JsonSchema;
+use SamMcDonald\Json\Schema\JsonSchemaBuilder;
+use SamMcDonald\Json\Schema\PropertyName;
 use SamMcDonald\Json\Serializer\Encoding\Components\JsonToStdClassDecoder;
 use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 use stdClass;
 
 abstract class AbstractJsonBuilder
 {
+    private JsonSchema|null $schema = null;
+
     private array $jsonProperties = [];
 
     public function __toString(): string
@@ -25,9 +30,14 @@ abstract class AbstractJsonBuilder
 
     public function addProperty(string $prop, mixed $value): self
     {
-        self::assertPropertyName($prop);
+        (new PropertyName($prop));
 
         return $this->addProp($prop, self::cleanValue($value));
+    }
+
+    public function addSchema(JsonSchema $schemaBuilder): self
+    {
+        new JsonSchemaBuilder();
     }
 
     public function toStdClass(): stdClass
@@ -50,6 +60,10 @@ abstract class AbstractJsonBuilder
 
     public function build(): string
     {
+        if ($this->schema !== null) {
+            $this->schema->assertProperty($prop, $value);
+        }
+
         return (string) $this;
     }
 
@@ -67,7 +81,7 @@ abstract class AbstractJsonBuilder
         }
     }
 
-    protected static function cleanValue(mixed $value): mixed
+    private static function cleanValue(mixed $value): mixed
     {
         if ($value instanceof self) {
             return $value->toStdClass();
@@ -87,7 +101,7 @@ abstract class AbstractJsonBuilder
         };
     }
 
-    protected static function cleanArrayValue(array $value): array
+    private static function cleanArrayValue(array $value): array
     {
         $returnArray = [];
 
