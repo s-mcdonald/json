@@ -28,6 +28,13 @@ Other features include
 - Hydration
 - Validation
 
+## Project Objectives
+1. Make working with Json structures super simple!
+2. Provide a Fast way to implement basic serialization with little to no config (using Attributes)
+3. Provide a more Powerful way to implement serialization using Traits and custom Normalizers.
+4. Provide a convenient way to perform common tasks with less duplication in your business logic.
+
+
 ## Contents
 
 * [Usage](#Usage)
@@ -166,6 +173,10 @@ $sut->someChild = new ChildClass("bar");
     }
 }
 ```
+
+#### Serialization Using a trait
+The above method utilizes the JsonProperty to serialize any object. This is by far the easiest and fasted way to convert your objects into Json. However, this will have some limitations. To overcome this, we have included two Facets called `SerializesWithMapping` and `SerializesToJson`.  With these Facets you can customize the Serialization and export vastly more complex objects.
+
 
 #### Serializing Enums
 
