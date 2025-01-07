@@ -15,7 +15,7 @@ This project is supported by your donations! Click the **[Sponsor](https://githu
 
 ___
 
-`PHPJson` is a JSON library that provides tools to work with JSON files ans structures.
+`PHPJson` is a JSON library that provides tools to work with JSON files and structures.
 Its primary feature is the ability to serialize PHP objects into JSON and deserialize (hydrate) JSON back to PHP objects. 
 
 Other features include
