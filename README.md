@@ -36,10 +36,14 @@ Other features include
     * [Override Json Properties](#override-json-properties)
     * [Nested Structures](#nested-structures)
     * [Serializing Enums](#serializing-enums)
-    * [Hydration/Deserialization](#deserialize-aka-object-hydration)
+  * [Hydration/Deserialization](#deserialize-aka-object-hydration)
+    * [Basic Hydration](#basic-hydration)
     * [Hydrate with setters](#hydrate-to-setters)
   * [JsonBuilder](#jsonbuilder)
+    * [Basic Builder](#jsonbuilder-basics)
+    * [Objects and Arrays](#jsonbuilder-objects-and-arrays)
   * [Json Formatting](#json-formatting)
+    * [Prettify](#prettify--Uglify)
 * [Installation](#installation)
 * [Dependencies](#dependencies)
 * [License](#license)
@@ -199,7 +203,8 @@ echo Json::serialize(Status::Enabled);
 }
 ```
 
-#### Deserialize aka Object Hydration
+### Deserialize aka Object Hydration
+#### Basic Hydration
 For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, `PHPJson` will hydrate your class or entity.
 
 
@@ -258,6 +263,28 @@ Notice how the JsonProperty is used twice here, for hydration setter methods wil
 ### JsonBuilder
 Fluently create Json objects using PHP.
 
+#### JsonBuilder Basics
+```php
+
+$builder = Json::createJsonBuilder()
+        ->addProperty('id', 11)
+        ->addProperty('title', "Perfume Oil")
+        ->addProperty('rating', 4.26)
+        ->addProperty('stock', 65);
+
+echo $builder;
+```
+```json
+{
+    "id": 11,
+    "title": "Perfume Oil",
+    "rating": 4.26,
+    "stock": 65
+}
+```
+
+#### JsonBuilder Objects and Arrays
+
 ```php
 
 $builder = Json::createJsonBuilder()
@@ -297,6 +324,8 @@ echo $builder->addProperty(
 ```
 
 ### Json Formatting
+
+#### Prettify & Uglify
 Prettify or Uglify(minify) your json values
 
 ```php
