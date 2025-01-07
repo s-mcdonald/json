@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SamMcDonald\Json\Tests\Unit\Encoding;
+namespace SamMcDonald\Json\Tests\Unit\Serializer\Encoding;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
