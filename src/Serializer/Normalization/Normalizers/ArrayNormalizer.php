@@ -7,13 +7,13 @@ namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 use InvalidArgumentException;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
-use SamMcDonald\Json\Serializer\Normalization\Normalizers\Contracts\NormalizerInterface;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Contracts\AbstractNormalizer;
 use stdClass;
 
 /**
  * Normalize from array to stdClass.
  */
-class ArrayNormalizer implements NormalizerInterface
+class ArrayNormalizer extends AbstractNormalizer
 {
     public function __construct()
     {
@@ -41,20 +41,11 @@ class ArrayNormalizer implements NormalizerInterface
 
     private function processProperty(string $property, $value, JsonBuilder $jsonBuilder): void
     {
-        if (false === $this->isSerializable($value)) {
+        if (false === $this->canValueSerializable($value)) {
             return;
         }
 
         $this->assignToStdClass($property, $value, $jsonBuilder);
-    }
-
-    private function isSerializable($propertyValue): bool
-    {
-        return null === $propertyValue
-            || is_scalar($propertyValue)
-            || is_array($propertyValue)
-            || is_bool($propertyValue)
-            || is_object($propertyValue);
     }
 
     private function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
