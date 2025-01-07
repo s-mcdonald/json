@@ -6,9 +6,11 @@ namespace SamMcDonald\Json\Tests\Unit\Builder;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use SamMcDonald\Json\Builder\AbstractJsonBuilder;
 use SamMcDonald\Json\Builder\JsonBuilder;
 
 #[CoversClass(JsonBuilder::class)]
+#[CoversClass(AbstractJsonBuilder::class)]
 class JsonBuilderTest extends TestCase
 {
     public function testRemoveProperty(): void
@@ -158,6 +160,23 @@ JSON;
             $expected,
             ((string) $sut)
         );
+    }
+
+    public function testToArrayReturnsCorrectArray(): void
+    {
+        $builder = new JsonBuilder();
+
+        $builder->addProperty('name', 'John Doe');
+        $builder->addProperty('age', 30);
+        $builder->addProperty('isActive', true);
+
+        $expected = [
+            'name' => 'John Doe',
+            'age' => 30,
+            'isActive' => true,
+        ];
+
+        static::assertSame($expected, $builder->toArray());
     }
 
     private function createBuilder(): JsonBuilder
