@@ -32,16 +32,27 @@
         }
     },
     "scripts": {
+        "dev:clean": [
+            "docker-compose down --volumes --remove-orphans",
+            "docker ps -aq | xargs -r docker rm -f",
+            "docker volume prune -f",
+            "docker network prune -f",
+            "docker system prune --all --volumes -f",
+            "docker-compose up --build --remove-orphans --force-recreate"
+        ],
+        "dev:start": [
+            "docker-compose up -d"
+        ],
+        "dev:stop": [
+            "docker-compose down"
+        ],
         "test": "XDEBUG_MODE=coverage php vendor/bin/phpunit --colors=always",
-        "test:coverage": "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text --colors=always",
-        "test:detail": "XDEBUG_MODE=coverage php vendor/bin/phpunit --colors=always --testdox",
         "build": [
             "composer clearcache",
             "composer dumpautoload",
             "composer update",
             "composer install",
-            "@clean",
-            "@test:detail"
+            "@clean"
         ],
         "clean:csf:check": "./dev/bin/php-cs-fixer check --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
         "clean:csf:fix": "./dev/bin/php-cs-fixer fix --diff -v --allow-risky=yes --config=\"./dev/csfixer.php\"",
