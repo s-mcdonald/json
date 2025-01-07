@@ -40,7 +40,7 @@ class DoubleTypeTest extends TestCase
         static::assertSame($expected, $method->invoke($this->sut, $input));
     }
 
-    public function castValueProvider(): array
+    public static function castValueProvider(): array
     {
         return [
             [123, 123.0],           // Integer to float

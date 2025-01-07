@@ -38,7 +38,7 @@ class ArrayTypeTest extends TestCase
         static::assertSame($expected, $method->invoke($this->arrayType, $input));
     }
 
-    public function castValueProvider(): array
+    public static function castValueProvider(): array
     {
         return [
             [['key' => 'value'], ['key' => 'value']], // Already an array
