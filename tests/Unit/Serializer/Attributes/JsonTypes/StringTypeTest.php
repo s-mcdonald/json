@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit\Serializer\Attributes\JsonTypes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Attributes\JsonTypes\StringType;
 
+#[CoversClass(StringType::class)]
 class StringTypeTest extends TestCase
 {
     public function testStringType(): void
