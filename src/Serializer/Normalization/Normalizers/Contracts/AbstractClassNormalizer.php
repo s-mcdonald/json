@@ -14,6 +14,7 @@ use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
+use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use stdClass;
 use TypeError;
 
@@ -37,6 +38,12 @@ abstract class AbstractClassNormalizer extends AbstractNormalizer
 
         return $this->transferToJsonBuilder($input)->toStdClass();
     }
+
+    abstract protected function transferToJsonBuilder(object $propertyValue): JsonBuilder;
+
+    abstract protected function processProperty(Context $context): void;
+
+    abstract protected function processMethod(Context $context): void;
 
     protected function getValueFromPropOrMethod(
         ReflectionMethod|ReflectionProperty $reflection,
@@ -81,6 +88,37 @@ abstract class AbstractClassNormalizer extends AbstractNormalizer
         );
     }
 
+    protected function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
+    {
+        if (is_object($propertyValue)) {
+            $classObject->addProperty($propertyName, $this->transferToJsonBuilder($propertyValue));
+
+            return;
+        }
+
+        match (\gettype($propertyValue)) {
+            'array' => $classObject->addProperty($propertyName, $this->mapArrayContents($propertyValue)),
+            'NULL', 'boolean', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
+            default => throw new JsonSerializableException('Invalid type.'),
+        };
+    }
+
+    protected function mapArrayContents(array $array): array
+    {
+        $newArray = [];
+        foreach ($array as $value) {
+            $newArray[] = match (true) {
+                is_null($value) => null,
+                is_bool($value), is_scalar($value) => $value,
+                is_array($value) => $this->mapArrayContents($value),
+                is_object($value) => $this->transferToJsonBuilder($value),
+                default => throw new JsonSerializableException('Invalid type in array.'),
+            };
+        }
+
+        return $newArray;
+    }
+
     protected function normalizeEnum(object $propertyValue): stdClass
     {
         $reflectionClass = new ReflectionClass($propertyValue);
@@ -95,22 +133,5 @@ abstract class AbstractClassNormalizer extends AbstractNormalizer
         return $builder
             ->addProperty($reflectionClass->getShortName(), $value)
             ->toStdClass();
-    }
-
-    abstract protected function transferToJsonBuilder(object $propertyValue): JsonBuilder;
-
-    protected function assignToStdClass($propertyName, $propertyValue, JsonBuilder $classObject): void
-    {
-        if (is_object($propertyValue)) {
-            $classObject->addProperty($propertyName, $this->transferToJsonBuilder($propertyValue));
-
-            return;
-        }
-
-        match (\gettype($propertyValue)) {
-            'array' => $classObject->addProperty($propertyName, $this->mapArrayContents($propertyValue)),
-            'NULL', 'boolean', 'string', 'integer', 'double' => $classObject->addProperty($propertyName, $propertyValue),
-            default => throw new JsonSerializableException('Invalid type.'),
-        };
     }
 }

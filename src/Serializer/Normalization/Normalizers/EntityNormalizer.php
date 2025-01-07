@@ -6,7 +6,6 @@ namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
 use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
-use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\Context;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Context\ContextBuilder;
 use SamMcDonald\Json\Serializer\Normalization\Normalizers\Contracts\AbstractClassNormalizer;
@@ -31,23 +30,7 @@ final class EntityNormalizer extends AbstractClassNormalizer
         return $jsonBuilder;
     }
 
-    protected function mapArrayContents(array $array): array
-    {
-        $newArray = [];
-        foreach ($array as $value) {
-            $newArray[] = match (true) {
-                is_null($value) => null,
-                is_bool($value), is_scalar($value) => $value,
-                is_array($value) => $this->mapArrayContents($value),
-                is_object($value) => $this->transferToJsonBuilder($value),
-                default => throw new JsonSerializableException('Invalid type in array.'),
-            };
-        }
-
-        return $newArray;
-    }
-
-    private function processProperty(Context $context): void
+    protected function processProperty(Context $context): void
     {
         if (false === $context->getReflectionItem()->isInitialized($context->getOriginalObject())) {
             return;
@@ -60,5 +43,10 @@ final class EntityNormalizer extends AbstractClassNormalizer
         }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
+    }
+
+    protected function processMethod(Context $context): void
+    {
+        //
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Serializer\Normalization\Normalizers;
 
-use ReflectionAttribute;
 use ReflectionMethod;
 use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
@@ -38,23 +37,7 @@ final class ObjectNormalizer extends AbstractClassNormalizer
         return $jsonBuilder;
     }
 
-    protected function mapArrayContents(array $array): array
-    {
-        $newArray = [];
-        foreach ($array as $value) {
-            $newArray[] = match (true) {
-                is_null($value) => null,
-                is_bool($value), is_scalar($value) => $value,
-                is_array($value) => $this->mapArrayContents($value),
-                is_object($value) => $this->transferToJsonBuilder($value),
-                default => throw new JsonSerializableException('Invalid type in array.'),
-            };
-        }
-
-        return $newArray;
-    }
-
-    private function processProperty(Context $context): void
+    protected function processProperty(Context $context): void
     {
         if (0 === count($context->getJsonPropertyAttributes())) {
             return;
@@ -80,14 +63,14 @@ final class ObjectNormalizer extends AbstractClassNormalizer
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        if (false === $this->canValueSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
             return;
         }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
     }
 
-    private function processMethod(Context $context): void
+    protected function processMethod(Context $context): void
     {
         if (0 === count($context->getJsonPropertyAttributes())) {
             return;
@@ -99,7 +82,7 @@ final class ObjectNormalizer extends AbstractClassNormalizer
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->isSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        if (false === $this->canValueSerializable($propertyValue)) {
             return;
         }
 
@@ -110,21 +93,5 @@ final class ObjectNormalizer extends AbstractClassNormalizer
         }
 
         $this->assignToStdClass($context->getPropertyName(), $propertyValue, $context->getClassObject());
-    }
-
-    /**
-     * @param array<ReflectionAttribute> $attributes
-     */
-    private function isSerializable($propertyValue, array $attributes): bool
-    {
-        if (false === $this->propertyReader->hasJsonPropertyAttributes($attributes)) {
-            return false;
-        }
-
-        if ($this->canValueSerializable($propertyValue)) {
-            return true;
-        }
-
-        return false;
     }
 }
