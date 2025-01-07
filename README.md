@@ -15,10 +15,10 @@ This project is supported by your donations! Click the **[Sponsor](https://githu
 
 ___
 
-PHPJson is a JSON library that provides tools to work with JSON files ans structures.
+`PHPJson` is a JSON library that provides tools to work with JSON files ans structures.
 Its primary feature is the ability to serialize PHP objects into JSON and deserialize (hydrate) JSON back to PHP objects. 
 
-Other features such include;
+Other features include
 - Encode
 - Decode
 - Minify (uglify)
@@ -36,7 +36,8 @@ Other features such include;
     * [Override Json Properties](#override-json-properties)
     * [Nested Structures](#nested-structures)
     * [Serializing Enums](#serializing-enums)
-  * [Hydration/Deserialization](#deserialize-aka-object-hydration)
+    * [Hydration/Deserialization](#deserialize-aka-object-hydration)
+    * [Hydrate with setters](#hydrate-to-setters)
   * [JsonBuilder](#jsonbuilder)
   * [Json Formatting](#json-formatting)
 * [Installation](#installation)
@@ -107,7 +108,7 @@ class User
 ```
 
 #### Serialize from methods
-Yo can also serialize values from your getter methods. The method can be also private or protected and PHPJson will extract the value from it.
+You can also serialize values from your getter methods. The method can be public protected or private and `PHPJson` will extract the value from it.
 ```php
 class User
 {
@@ -126,7 +127,7 @@ class User
 
 #### Nested Structures
 
-You can also have complex nested objects, and JSONPhp will produce valid json with nested values accordingly.
+You can also have complex nested objects, and `PHPJson` will produce valid json with nested values accordingly.
 
 
 ```php
@@ -164,7 +165,7 @@ $sut->someChild = new ChildClass("bar");
 
 #### Serializing Enums
 
-PHPJson also supports serializing all forms of enums,pure and backed.
+`PHPJson` also supports serializing all forms of enums, pure and backed.
 
 Pure Enum
 ```php
@@ -199,7 +200,7 @@ echo Json::serialize(Status::Enabled);
 ```
 
 #### Deserialize aka Object Hydration
-For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, PHPJson will hydrate your class or entity.
+For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, `PHPJson` will hydrate your class or entity.
 
 
 ```php
@@ -218,7 +219,6 @@ class MyUser
 }
 ```
 
-
 Now deserialize the json string with the PHP class.
 ```php
 $myUser = Json::deserialize($json, MyUser::class);
@@ -230,7 +230,13 @@ YourNamespace\MyUser Object (
     'isActive' => true
 )
 ```
-If your `Json` has different property names, you can use the JsonProperty attribute for mapping.
+
+#### Hydrate to setters
+If your class requires processing or passing by a setter method, you can hydrate to a setter given that it adheres to;
+* Single required argument
+* JsonProperty attribute is used to denote the hydration.
+* Required param is of matching type
+
 ```php
 class MyUser 
 {
@@ -239,9 +245,15 @@ class MyUser
 
     public int $age;
     public bool $isActive;
+    
+    #[JsonProperty('name')]
+    public function setUserName(string $value): void
+    {
+        $this->userName = 'foo: ' . $value;
+    }
 }
 ```
-
+Notice how the JsonProperty is used twice here, for hydration setter methods will be the preferred hydration point, since, `setUserName` can not be used for serialization, the property `$userName` will be used for this.
 
 ### JsonBuilder
 Fluently create Json objects using PHP.
@@ -285,7 +297,7 @@ echo $builder->addProperty(
 ```
 
 ### Json Formatting
-Prettify or Uglify your json strings
+Prettify or Uglify(minify) your json values
 
 ```php
 Json::prettify('{"name":"bar","age":34}')
