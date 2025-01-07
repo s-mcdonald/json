@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: php_lib
+        volumes:
+            - .:/usr/src/app:cached
+            - /tmp:/tmp
+        ports:
+            - "9000:9000"
+            - "9003:9003"
+        networks:
+            - php_network
+
+networks:
+    php_network:
+        driver: bridge
