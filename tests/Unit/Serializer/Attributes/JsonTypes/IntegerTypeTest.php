@@ -40,7 +40,7 @@ class IntegerTypeTest extends TestCase
         $this->assertSame($expected, $method->invoke($this->integerType, $input));
     }
 
-    public function castValueProvider(): array
+    public static function castValueProvider(): array
     {
         return [
             [123.45, 123],
