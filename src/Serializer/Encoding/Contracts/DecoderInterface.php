@@ -6,5 +6,5 @@ namespace SamMcDonald\Json\Serializer\Encoding\Contracts;
 
 interface DecoderInterface
 {
-    public function decode(string $jsonValue, string $fqClassName): DecodingResultInterface;
+    public function decode(string $jsonValue, string $fqClassName): EncodingResultInterface;
 }
