@@ -38,20 +38,11 @@ class JsonUtilities
         $decodedData[$key] = $item;
 
         $package = (new ArrayToJsonEncoder())->encode($decodedData);
-
-        if ($package->isValid()) {
-            return $package->getBody();
-        }
-
-        return false;
+        return $package->getBody();
     }
 
     public function remove(string $json, string $property): string|false
     {
-        if (false === $this->isValid($json)) {
-            return false;
-        }
-
         $package = (new JsonToArrayDecoder())->decode($json);
         if (false === $package->isValid()) {
             return false;
@@ -63,19 +54,11 @@ class JsonUtilities
 
         $package = (new ArrayToJsonEncoder())->encode($decodedData);
 
-        if ($package->isValid()) {
-            return $package->getBody();
-        }
-
-        return false;
+        return $package->getBody();
     }
 
     public function toArray(string $json): array|false
     {
-        if (false === $this->isValid($json)) {
-            return false;
-        }
-
         $package = (new JsonToArrayDecoder())->decode($json);
         if ($package->isValid()) {
             return $package->getBody();
