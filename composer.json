@@ -1,6 +1,7 @@
 {
     "name": "s-mcdonald/phpjson",
     "description": "PHPJson: An elegant and simple JSON object serialization library for PHP.",
+    "keywords": ["serializer", "json", "json-php", "php-json", "php-json-library", "hydration", "json-hydration"],
     "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
