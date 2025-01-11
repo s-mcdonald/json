@@ -14,9 +14,9 @@ readonly class AbstractFlags
     {
     }
 
-    final public static function create(): self
+    final public static function create(): static
     {
-        return new self(0);
+        return new static(0);
     }
 
     final public function getFlags(): int

@@ -6,7 +6,7 @@ namespace SamMcDonald\Json\Serializer\Encoding\Components\Flags;
 
 readonly class DecodeFlags extends AbstractFlags
 {
-    public function withBigIntAsString(bool $value): self
+    public function withBigIntAsString(bool $value): static
     {
         return new self($this->getWithFlag(JSON_BIGINT_AS_STRING, $value));
     }
@@ -16,7 +16,7 @@ readonly class DecodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_BIGINT_AS_STRING);
     }
 
-    public function withIgnoreInvalidUtf8(bool $value): self
+    public function withIgnoreInvalidUtf8(bool $value): static
     {
         return new self($this->getWithFlag(JSON_INVALID_UTF8_IGNORE, $value));
     }
