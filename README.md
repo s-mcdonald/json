@@ -323,7 +323,7 @@ Fluently create Json objects using PHP.
 
 $builder = Json::createJsonBuilder()
         ->addProperty('id', 11)
-        ->addProperty('title', "Perfume Oil")
+        ->addProperty('title', "Apple iOS 15")
         ->addProperty('rating', 4.26)
         ->addProperty('stock', 65);
 
@@ -332,7 +332,7 @@ echo $builder;
 ```json
 {
     "id": 11,
-    "title": "Perfume Oil",
+    "title": "Apple iOS 15",
     "rating": 4.26,
     "stock": 65
 }
@@ -344,7 +344,7 @@ echo $builder;
 
 $builder = Json::createJsonBuilder()
         ->addProperty('id', 11)
-        ->addProperty('title', "Perfume Oil")
+        ->addProperty('title', "Apple iOS 15")
         ->addProperty('rating', 4.26)
         ->addProperty('stock', 65);
         
@@ -364,7 +364,7 @@ echo $builder->addProperty(
 ```json
 {
     "id": 11,
-    "title": "Perfume Oil",
+    "title": "Apple iOS 15",
     "rating": 4.26,
     "stock": 65,
     "thumbnail": {

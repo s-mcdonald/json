@@ -6,6 +6,7 @@ namespace SamMcDonald\Json;
 
 use ArrayIterator;
 use SamMcDonald\Json\Builder\JsonBuilder;
+use SamMcDonald\Json\Serializer\Encoding\Components\ArrayToJsonEncoder;
 use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
@@ -21,8 +22,11 @@ final class Json
 
     private static JsonSerializer|null $jsonSerializer = null;
 
-    private function __construct(private string $json)
+    private array $jsonProperties;
+
+    private function __construct(string $json)
     {
+        $this->jsonProperties = self::toArray($json);
     }
 
     private static function getJsonSerializer(): JsonSerializer
@@ -54,13 +58,12 @@ final class Json
 
     public function toPretty(): string
     {
-        return self::prettify($this->json);
+        return (new ArrayToJsonEncoder())->encode($this->jsonProperties)->getBody();
     }
 
     public function addProperty(string $key, mixed $value): self
     {
-        $this->json = self::push($this->json, $key, $value);
-
+        $this->jsonProperties[$key] = $value;
         return $this;
     }
 
