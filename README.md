@@ -53,6 +53,7 @@ Other features include
     * [Objects and Arrays](#jsonbuilder-objects-and-arrays)
   * [Json Formatting](#json-formatting)
     * [Prettify](#prettify--Uglify)
+  * [Json Validate](#json-validate)
 * [Installation](#installation)
 * [Dependencies](#dependencies)
 * [License](#license)
@@ -401,6 +402,16 @@ Json::uglify('{
 ```
 ```json
 {"name":"bar","age":34}
+```
+
+#### Json Validate
+PHP 8.3 onwards has the json_validate function. This library duplicates this behaviour so it can bve used in PHP 8.2
+
+```php
+Json::validate($json): bool
+
+// or
+json_validate($json): bool 
 ```
 
 # Reference
