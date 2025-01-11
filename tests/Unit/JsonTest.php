@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Builder\JsonBuilder;
 use SamMcDonald\Json\Json;
+use SamMcDonald\Json\Loaders\UrlLoader;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
@@ -585,5 +586,73 @@ JSON;
 JSON;
 
         static::assertEquals($expected, Json::remove($json, "children"));
+    }
+
+    public function testCreateFromFile(): void
+    {
+        $fileName = __DIR__ . '/../Fixtures/Files/basic.json';
+        $json = Json::createFromFile($fileName);
+
+        $expected = '{"foo":"bar","num":123,"double":123.567}';
+
+        static::assertEquals(
+            $expected,
+            $json->toUgly(),
+        );
+    }
+
+    public function testValidate(): void
+    {
+        $jsonBad = '{"foo":"bar","num":123,double:123.567}';
+        $jsonGood = '{"foo":"bar","num":123,"double":123.567}';
+
+        static::assertTrue(
+            Json::validate($jsonGood),
+        );
+        static::assertTrue(
+            json_validate($jsonGood),
+        );
+
+        static::assertFalse(
+            json_validate($jsonBad),
+        );
+        static::assertFalse(
+            Json::validate($jsonBad),
+        );
+    }
+
+    public function testIterate(): void
+    {
+        $foundFoo = false;
+        $foundNum = false;
+        $foundDouble = false;
+
+        $json = '{"foo":"bar","num":123,"double":123.567}';
+
+        foreach (Json::iterate($json) as $key => $value) {
+            echo $key . ' => ' . $value . "\n";
+            if ($key === 'foo') {
+                $foundFoo = true;
+            }
+            if ($key === 'num') {
+                $foundNum = true;
+            }
+            if ($key === 'double') {
+                $foundDouble = true;
+            }
+        }
+
+        static::assertTrue($foundFoo);
+        static::assertTrue($foundNum);
+        static::assertTrue($foundDouble);
+    }
+
+    public function testIterateWithInvalidJson(): void
+    {
+        $this->expectException(JsonSerializableException::class);
+
+        $json = '{"foo":"bar","num:123,"double":123.567}';
+
+        Json::iterate($json);
     }
 }
