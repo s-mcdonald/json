@@ -6,6 +6,8 @@ namespace SamMcDonald\Json;
 
 use ArrayIterator;
 use SamMcDonald\Json\Builder\JsonBuilder;
+use SamMcDonald\Json\Loaders\LocalFileLoader;
+use SamMcDonald\Json\Loaders\UrlLoader;
 use SamMcDonald\Json\Serializer\Encoding\Components\ArrayToJsonEncoder;
 use SamMcDonald\Json\Serializer\Encoding\Components\JsonToArrayDecoder;
 use SamMcDonald\Json\Serializer\Enums\JsonFormat;
@@ -44,6 +46,16 @@ final class Json
     public static function createFromString(string $json): self
     {
         return new self($json);
+    }
+
+    public static function createFromFile(string $fileName): self
+    {
+        return new self((new LocalFileLoader())->load($fileName));
+    }
+
+    public static function createFromUrl(string $url): self
+    {
+        return new self((new UrlLoader())->load($url));
     }
 
     public static function serialize(
