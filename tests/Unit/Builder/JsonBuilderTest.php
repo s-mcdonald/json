@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Builder\AbstractJsonBuilder;
 use SamMcDonald\Json\Builder\JsonBuilder;
+use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 
 #[CoversClass(JsonBuilder::class)]
 #[CoversClass(AbstractJsonBuilder::class)]
@@ -47,6 +48,13 @@ JSON;
             $expected,
             (string)JsonBuilder::createFromJson('{"foo": null}')
         );
+    }
+
+    public function testCreateFromJsonThrowsJsonException(): void
+    {
+        $this->expectException(JsonException::class);
+
+        JsonBuilder::createFromJson('{"foo" null}');
     }
 
     public function testAddNullProperty(): void
@@ -177,6 +185,26 @@ JSON;
         ];
 
         static::assertSame($expected, $builder->toArray());
+    }
+
+    public function testBuild(): void
+    {
+        $sut = $this->createBuilder();
+
+        $expected = <<<JSON
+{
+    "foo": 12345.678,
+    "foo22": 22
+}
+JSON;
+
+        $sut->addProperty("foo", 12345.678);
+        $sut->addProperty("foo22", 22);
+
+        self::assertEquals(
+            $expected,
+            $sut->build()
+        );
     }
 
     private function createBuilder(): JsonBuilder

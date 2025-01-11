@@ -6,8 +6,11 @@ namespace SamMcDonald\Json\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 use SamMcDonald\Json\Serializer\Hydrator;
+use SamMcDonald\Json\Tests\Fixtures\Entities\BadClass\VeryBadClass;
+use SamMcDonald\Json\Tests\Fixtures\Entities\ClassWithPublicStringProperty;
 use SamMcDonald\Json\Tests\Fixtures\Entities\ContainsSetters\UserWithSetters;
 use SamMcDonald\Json\Tests\Fixtures\Entities\SimplePropertiesNoOverrideClass;
 
@@ -114,5 +117,22 @@ class HydratorTest extends TestCase
 
         $sut = new Hydrator();
         $sut->hydrate(["foo" => "bar"],'Foo\Bar\Baz\Classy');
+    }
+
+    /**
+     * Foo does not exist in the class
+     */
+    public function testHydrateWhenPropertyDoesntExit(): void
+    {
+        $sut = new Hydrator();
+        $o = $sut->hydrate(["foo" => "bar"],ClassWithPublicStringProperty::class);
+
+        static::assertFalse(
+            isset($o->name),
+        );
+
+        static::assertFalse(
+            isset($o->foo)
+        );
     }
 }
