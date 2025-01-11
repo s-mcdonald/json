@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SamMcDonald\Json\Serializer;
 
 use SamMcDonald\Json\Serializer\Attributes\AttributeReader\JsonPropertyReader;
+use SamMcDonald\Json\Serializer\Encoding\Components\Flags\EncodeFlags;
+use SamMcDonald\Json\Serializer\Encoding\Components\Flags\EncodeOptions;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\DecoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\Contracts\EncoderInterface;
 use SamMcDonald\Json\Serializer\Encoding\JsonDecoder;
@@ -22,7 +24,7 @@ class JsonSerializer
         private NormalizerInterface|null $objectNormalizer = null,
     ) {
         if (null === $this->encoder) {
-            $this->encoder = new JsonEncoder(new JsonValidator());
+            $this->encoder = new JsonEncoder(new JsonValidator(), new EncodeOptions(EncodeFlags::create(), 512));
         }
 
         if (null === $this->decoder) {
