@@ -6,10 +6,6 @@ namespace SamMcDonald\Json\Serializer\Encoding\Components\Flags;
 
 readonly class AbstractFlags
 {
-    // @todo JSON_NUMERIC_CHECK;
-    //       JSON_PARTIAL_OUTPUT_ON_ERROR;
-    //       JSON_INVALID_UTF8_SUBSTITUTE;
-
     protected function __construct(protected int $flags = 0)
     {
     }
