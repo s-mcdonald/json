@@ -11,12 +11,12 @@
 _A Fast and Lightweight PHP JSON Object Serialization Library._
 
 ## 💖 Support This Project
-This project is supported by your donations! Click the **[Sponsor](https://github.com/sponsors/s-mcdonald)** link to display funding options.
+`PHPJson` is supported by your donations! Click the **[Sponsor](https://github.com/sponsors/s-mcdonald)** link to display funding options.
 
 ___
 
-`PHPJson` is a JSON library that provides tools to work with JSON files and structures.
-Its primary feature is the ability to serialize PHP objects into JSON and deserialize (hydrate) JSON back to PHP objects. 
+`PHPJson` is a library that provides tools to work with JSON files and structures for PHP.
+Its primary feature is the ability to quickly and easily serialize PHP objects into JSON and deserialize (hydrate) JSON back to PHP objects. 
 
 Other features include
 - Encode
@@ -25,14 +25,15 @@ Other features include
 - Prettify
 - Json Builder
 - Serialization (including Enums)
+- Serialization value casting
 - Hydration
 - Validation
 
 ## Project Objectives
-1. Make working with Json structures super simple!
-2. Provide a Fast way to implement basic serialization with little to no config (using Attributes)
-3. Provide a more Powerful way to implement serialization using Traits and custom Normalizers.
-4. Provide a convenient way to perform common tasks with less duplication in your business logic.
+1. Simplify working with JSON structures.
+2. Enable fast and minimal-configuration serialization using attributes.
+3. Provide advanced serialization capabilities through traits and custom normalizers.
+4. Reduce duplication in business logic by streamlining common tasks.
 
 
 ## Contents
@@ -43,9 +44,10 @@ Other features include
     * [Override Json Properties](#override-json-properties)
     * [Nested Structures](#nested-structures)
     * [Serializing Enums](#serializing-enums)
+    * [Casting values](#casting-values)
   * [Hydration/Deserialization](#deserialize-aka-object-hydration)
     * [Basic Hydration](#basic-hydration)
-    * [Hydrate with setters](#hydrate-to-setters)
+    * [Hydration with Setter Methods](#hydration-with-setter-methods)
   * [JsonBuilder](#jsonbuilder)
     * [Basic Builder](#jsonbuilder-basics)
     * [Objects and Arrays](#jsonbuilder-objects-and-arrays)
@@ -61,7 +63,7 @@ Other features include
 ### Serialization
 
 #### Quick usage
-The fasted way to serialize your class into Json is to use the JsonProperty attribute.
+The fastest way to serialize a class into JSON is by using the `JsonProperty` attribute.
 ```php
 class User
 {
@@ -94,7 +96,7 @@ echo Json::serialize($user); // outputs json
 ```
 
 #### Override Json Properties
-You can override the property name by supplying your own. This also works in reverse for hydration.
+You can customize property names in the JSON output by specifying your own names. This also applies when hydrating objects from JSON.
 
 ```php
 class User
@@ -119,10 +121,17 @@ class User
 ```
 
 #### Serialize from methods
-You can also serialize values from your getter methods. The method can be public protected or private and `PHPJson` will extract the value from it.
+You can serialize values from getter methods, regardless of whether the method is public, protected, or private. `PHPJson` will automatically extract the value.
+
 ```php
 class User
 {
+    #[JsonProperty]
+    public function authenticator(): string
+    {
+        return $this->authenticator;
+    }
+    
     #[JsonProperty('creditCardNumber')]
     public function getCreditCard(): int
     {
@@ -132,13 +141,14 @@ class User
 ```
 ```json
 {
+    "authenticator": "MasterCard",
     "creditCardNumber": "55044455444677"
 }
 ```
 
 #### Nested Structures
 
-You can also have complex nested objects, and `PHPJson` will produce valid json with nested values accordingly.
+`PHPJson` allows you to work seamlessly with complex, nested objects. Nested classes and their properties are serialized into valid JSON structures, matching the relationships between objects.
 
 
 ```php
@@ -180,7 +190,7 @@ The above method utilizes the JsonProperty to serialize any object. This is by f
 
 #### Serializing Enums
 
-`PHPJson` also supports serializing all forms of enums, pure and backed.
+`PHPJson` supports the serialization of both pure and backed enums.
 
 Pure Enum
 ```php
@@ -214,9 +224,41 @@ echo Json::serialize(Status::Enabled);
 }
 ```
 
+#### Casting Values
+
+When serializing a PHP object to JSON, you might need to cast specific property values into different types for the JSON output. You can achieve this by using the `JsonProperty` attribute to specify the desired type using a `JsonType`, such as `StringType` or `IntegerType`.
+
+```php
+class 
+{
+    #[JsonProperty(type: new StringType())]
+    public float $myNumber = 123.456;
+    
+    #[JsonProperty(type: new IntegerType())]
+    public float $myNumber2 = 123.456;
+}
+```
+```json
+{
+  "myNumber": "123.456",
+  "myNumber2": 123
+}
+```
+
+Available types are;
+  * StringType
+  * ArrayType,
+  * BooleanType,
+  * DoubleType,
+  * IntegerType,
+  * NullType,
+  * ObjectType
+
+
+
 ### Deserialize aka Object Hydration
 #### Basic Hydration
-For simple Hydration, you do not need to implement any attributes or have a mapping for properties, as long as the Class you use has the same properties within your json, `PHPJson` will hydrate your class or entity.
+With `PHPJson`, basic object hydration is straightforward. If your class properties match the structure and property names in your JSON, no additional attributes or mappings are required. The library will automatically map the JSON data to your class or entity.
 
 
 ```php
@@ -247,12 +289,14 @@ YourNamespace\MyUser Object (
 )
 ```
 
-#### Hydrate to setters
-If your class requires processing or passing by a setter method, you can hydrate to a setter given that it adheres to;
-* Single required argument
-* JsonProperty attribute is used to denote the hydration.
-* Required param is of matching type
+#### Hydration with Setter Methods
 
+If your class relies on setters for processing or assigning values, `PHPJson` can hydrate using setter methods, provided these conditions are met:
+
+- The setter accepts exactly one required argument.
+- The `JsonProperty` attribute is used to specify the property for hydration.
+- The argument type matches the data type in the JSON.
+- 
 ```php
 class MyUser 
 {

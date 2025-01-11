@@ -81,9 +81,9 @@ class JsonSerializerTest extends TestCase
                 }
             ],
             'cast string to DoubleType' => [
-                '{"bar":123.456}',
+                '{"age":123.456}',
                 new class {
-                    #[JsonProperty('bar', new DoubleType())]
+                    #[JsonProperty(type: new DoubleType())]
                     public string $age = "123.456";
                 }
             ],
