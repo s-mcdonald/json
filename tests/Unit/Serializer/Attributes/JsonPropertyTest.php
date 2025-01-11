@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Attributes\JsonTypes\StringType;
 
 #[CoversClass(JsonProperty::class)]
 class JsonPropertyTest extends TestCase
@@ -73,5 +74,22 @@ class JsonPropertyTest extends TestCase
             ["'jsonProp"],             // Leading single-quote not valid in JSON
             ["json\nProp"],            // Contains newline
         ];
+    }
+
+    public function testJsonPropertyWithTypeAsNull(): void
+    {
+        $sut = new JsonProperty();
+
+        static::assertNull($sut->getType());
+    }
+
+    public function testJsonPropertyWithType(): void
+    {
+        $sut = new JsonProperty(type: new StringType());
+
+        static::assertInstanceOf(
+            StringType::class,
+            $sut->getType(),
+        );
     }
 }

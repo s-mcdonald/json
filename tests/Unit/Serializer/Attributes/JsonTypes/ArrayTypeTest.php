@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit\Serializer\Attributes\JsonTypes;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Serializer\Attributes\JsonTypes\ArrayType;
 
+#[CoversClass(ArrayType::class)]
 class ArrayTypeTest extends TestCase
 {
     private ArrayType $arrayType;
