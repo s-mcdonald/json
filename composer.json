@@ -22,7 +22,10 @@
     "autoload": {
         "psr-4": {
             "SamMcDonald\\Json\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions/json_validate.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

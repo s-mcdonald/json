@@ -93,6 +93,11 @@ final class Json
         return self::getJsonUtilities()->toArray($json);
     }
 
+    public static function validate(string $json): bool
+    {
+        return json_validate($json);
+    }
+
     public static function iterate(string $json): ArrayIterator
     {
         $decoded = (new JsonToArrayDecoder())->decode($json);
