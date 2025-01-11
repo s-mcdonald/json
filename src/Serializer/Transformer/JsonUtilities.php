@@ -38,6 +38,7 @@ class JsonUtilities
         $decodedData[$key] = $item;
 
         $package = (new ArrayToJsonEncoder())->encode($decodedData);
+
         return $package->getBody();
     }
 
