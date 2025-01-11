@@ -27,7 +27,6 @@ class JsonToStdClassDecoder implements Contracts\DecoderInterface
 
         try {
             $decodedData = (object) json_decode($jsonValue, false, $this->options->getDepth(), JSON_THROW_ON_ERROR | $flags);
-
         } catch (Exception $e) {
             return new JsonEncodingResult(
                 '',

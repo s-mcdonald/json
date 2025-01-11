@@ -7,6 +7,7 @@ namespace SamMcDonald\Json\Serializer\Normalization\Normalizers\Context;
 use ReflectionMethod;
 use ReflectionProperty;
 use SamMcDonald\Json\Builder\JsonBuilder;
+use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 
 readonly class Context
 {
@@ -16,6 +17,7 @@ readonly class Context
         private JsonBuilder $classObject,
         private array $jsonPropertyAttributes,
         private string $propertyName,
+        private JsonType|null $propertyType = null,
     ) {
     }
 
@@ -42,5 +44,10 @@ readonly class Context
     public function getPropertyName(): string
     {
         return $this->propertyName;
+    }
+
+    public function getCastType(): JsonType|null
+    {
+        return $this->propertyType;
     }
 }

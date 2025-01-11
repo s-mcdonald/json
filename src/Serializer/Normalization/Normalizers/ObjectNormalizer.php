@@ -63,7 +63,14 @@ final class ObjectNormalizer extends AbstractClassNormalizer
 
         $propertyValue = $this->getValueFromPropOrMethod($context->getReflectionItem(), $context->getOriginalObject());
 
-        if (false === $this->canValueSerializable($propertyValue, $context->getJsonPropertyAttributes())) {
+        $toType = $context->getCastType();
+
+        if (null !== $toType && $toType->canCast($propertyValue)) {
+            $propertyValue = $toType->casts($propertyValue);
+            echo gettype($propertyValue) . PHP_EOL;
+        }
+
+        if (false === $this->canValueSerializable($propertyValue)) {
             return;
         }
 

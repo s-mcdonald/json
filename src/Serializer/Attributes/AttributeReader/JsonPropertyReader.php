@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 use SamMcDonald\Json\Serializer\Attributes\JsonProperty;
+use SamMcDonald\Json\Serializer\Attributes\JsonTypes\Contracts\JsonType;
 use SamMcDonald\Json\Serializer\Exceptions\JsonSerializableException;
 use SamMcDonald\Json\Serializer\Hydration\Exceptions\HydrationException;
 
@@ -31,6 +32,15 @@ class JsonPropertyReader
         return match (count($attributes)) {
             0 => $defaultPropertyName,
             1 => $this->getPropertyName($attributes[0]->newInstance(), $defaultPropertyName),
+            default => throw JsonSerializableException::hasTooManyJsonProperties(),
+        };
+    }
+
+    public function getJsonPropertyCastTypeName(array $attributes): JsonType|null
+    {
+        return match (count($attributes)) {
+            0 => null,
+            1 => $attributes[0]->newInstance()->getType(),
             default => throw JsonSerializableException::hasTooManyJsonProperties(),
         };
     }

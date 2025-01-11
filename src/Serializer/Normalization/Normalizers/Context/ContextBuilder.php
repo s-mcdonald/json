@@ -24,6 +24,7 @@ readonly class ContextBuilder
     ): Context {
         $jsonPropertyAttributes = $prop->getAttributes(JsonProperty::class);
         $propertyName = $this->propertyReader->getJsonPropertyName($prop->getName(), $jsonPropertyAttributes);
+        $propertyType = $this->propertyReader->getJsonPropertyCastTypeName($jsonPropertyAttributes);
 
         return new Context(
             $prop,
@@ -31,6 +32,7 @@ readonly class ContextBuilder
             $classObject,
             $jsonPropertyAttributes,
             $propertyName,
+            $propertyType,
         );
     }
 }
