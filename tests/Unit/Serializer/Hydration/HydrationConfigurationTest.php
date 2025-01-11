@@ -16,6 +16,14 @@ class HydrationConfigurationTest extends TestCase
         $sut = new HydrationConfiguration();
         $sut->propertyHydrationTypeStrictMode = true;
 
-        static::assertEquals(true, $sut->propertyHydrationTypeStrictMode);
+        static::assertTrue($sut->propertyHydrationTypeStrictMode);
+    }
+
+    public function testConfigStrictDisabled(): void
+    {
+        $sut = new HydrationConfiguration();
+        $sut->propertyHydrationTypeStrictMode = false;
+
+        static::assertFalse($sut->propertyHydrationTypeStrictMode);
     }
 }
