@@ -29,33 +29,6 @@ final class Json
         $this->jsonProperties = self::toArray($json);
     }
 
-    private static function getJsonSerializer(): JsonSerializer
-    {
-        if (null === self::$jsonSerializer) {
-            self::$jsonSerializer = new JsonSerializer();
-        }
-
-        return self::$jsonSerializer;
-    }
-
-    private static function getJsonUtilities(): JsonUtilities
-    {
-        if (null === self::$jsonUtilities) {
-            self::$jsonUtilities = new JsonUtilities();
-        }
-
-        return self::$jsonUtilities;
-    }
-
-    private static function getJsonFormatter(): JsonFormatter
-    {
-        if (null === self::$jsonFormatter) {
-            self::$jsonFormatter = new JsonFormatter();
-        }
-
-        return self::$jsonFormatter;
-    }
-
     public function toPretty(): string
     {
         return (new ArrayToJsonEncoder())->encode($this->jsonProperties)->getBody();
@@ -64,6 +37,7 @@ final class Json
     public function addProperty(string $key, mixed $value): self
     {
         $this->jsonProperties[$key] = $value;
+
         return $this;
     }
 
@@ -128,5 +102,32 @@ final class Json
         }
 
         return new ArrayIterator($decoded->getBody());
+    }
+
+    private static function getJsonSerializer(): JsonSerializer
+    {
+        if (null === self::$jsonSerializer) {
+            self::$jsonSerializer = new JsonSerializer();
+        }
+
+        return self::$jsonSerializer;
+    }
+
+    private static function getJsonUtilities(): JsonUtilities
+    {
+        if (null === self::$jsonUtilities) {
+            self::$jsonUtilities = new JsonUtilities();
+        }
+
+        return self::$jsonUtilities;
+    }
+
+    private static function getJsonFormatter(): JsonFormatter
+    {
+        if (null === self::$jsonFormatter) {
+            self::$jsonFormatter = new JsonFormatter();
+        }
+
+        return self::$jsonFormatter;
     }
 }
