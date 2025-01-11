@@ -8,7 +8,7 @@ use SamMcDonald\Json\Serializer\JsonSerializer;
 
 trait CreatesFromJson
 {
-    public function createFromJson(string $json): string
+    public static function createFromJson(string $json): static
     {
         return (new JsonSerializer())->deserialize($json, static::class);
     }
