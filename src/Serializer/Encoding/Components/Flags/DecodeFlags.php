@@ -8,7 +8,7 @@ readonly class DecodeFlags extends AbstractFlags
 {
     public function withBigIntAsString(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_BIGINT_AS_STRING, $value));
+        return new static($this->getWithFlag(JSON_BIGINT_AS_STRING, $value));
     }
 
     public function hasBigIntAsString(): bool
@@ -18,7 +18,7 @@ readonly class DecodeFlags extends AbstractFlags
 
     public function withIgnoreInvalidUtf8(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_INVALID_UTF8_IGNORE, $value));
+        return new static($this->getWithFlag(JSON_INVALID_UTF8_IGNORE, $value));
     }
 
     public function hasIgnoreInvalidUtf8(): bool

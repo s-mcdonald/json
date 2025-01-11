@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SamMcDonald\Json\Tests\Unit\Builder;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use SamMcDonald\Json\Builder\AbstractJsonBuilder;
@@ -14,6 +15,20 @@ use SamMcDonald\Json\Serializer\Exceptions\JsonException;
 #[CoversClass(AbstractJsonBuilder::class)]
 class JsonBuilderTest extends TestCase
 {
+    public function testJsonEncodeThrowsJsonException(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Recursion error: Does not support itself');
+        $jsonBuilder = new JsonBuilder();
+        $data = [];
+        $data['self'] = $jsonBuilder;
+        $jsonBuilder->addProperty('self', $data);
+        $jsonBuilder->addProperty('self', $data);
+        $jsonBuilder->addProperty('self', $data);
+
+        echo $jsonBuilder;
+    }
+
     public function testRemoveProperty(): void
     {
         $original = <<<JSON

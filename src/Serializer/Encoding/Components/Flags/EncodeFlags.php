@@ -6,9 +6,9 @@ namespace SamMcDonald\Json\Serializer\Encoding\Components\Flags;
 
 readonly class EncodeFlags extends AbstractFlags
 {
-    public function withUnescapeSlashes(bool $value): self
+    public function withUnescapeSlashes(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_UNESCAPED_SLASHES, $value));
+        return new static($this->getWithFlag(JSON_UNESCAPED_SLASHES, $value));
     }
 
     public function hasUnescapeSlashes(): bool
@@ -16,9 +16,9 @@ readonly class EncodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_UNESCAPED_SLASHES);
     }
 
-    public function withUnescapeUnicode(bool $value): self
+    public function withUnescapeUnicode(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_UNESCAPED_UNICODE, $value));
+        return new static($this->getWithFlag(JSON_UNESCAPED_UNICODE, $value));
     }
 
     public function hasUnescapeUnicode(): bool
@@ -26,9 +26,9 @@ readonly class EncodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_UNESCAPED_UNICODE);
     }
 
-    public function withHexQuoteTags(bool $value): self
+    public function withHexQuoteTags(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_HEX_QUOT, $value));
+        return new static($this->getWithFlag(JSON_HEX_QUOT, $value));
     }
 
     public function hasHexQuoteTags(): bool
@@ -36,9 +36,9 @@ readonly class EncodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_HEX_QUOT);
     }
 
-    public function withHexAposTags(bool $value): self
+    public function withHexAposTags(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_HEX_APOS, $value));
+        return new static($this->getWithFlag(JSON_HEX_APOS, $value));
     }
 
     public function hasHexAposTags(): bool
@@ -46,9 +46,9 @@ readonly class EncodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_HEX_APOS);
     }
 
-    public function withHexAmpTags(bool $value): self
+    public function withHexAmpTags(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_HEX_AMP, $value));
+        return new static($this->getWithFlag(JSON_HEX_AMP, $value));
     }
 
     public function hasHexAmpTags(): bool
@@ -56,9 +56,9 @@ readonly class EncodeFlags extends AbstractFlags
         return $this->hasFlag(JSON_HEX_AMP);
     }
 
-    public function withHexTags(bool $value): self
+    public function withHexTags(bool $value): static
     {
-        return new self($this->getWithFlag(JSON_HEX_TAG, $value));
+        return new static($this->getWithFlag(JSON_HEX_TAG, $value));
     }
 
     public function hasHexTags(): bool

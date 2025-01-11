@@ -27,7 +27,7 @@ abstract class AbstractJsonBuilder
     {
         self::assertPropertyName($prop);
 
-        return $this->addProp($prop, self::cleanValue($value));
+        return $this->addProp($prop, self::cleanValue($value, $this));
     }
 
     public function toStdClass(): stdClass
@@ -67,14 +67,14 @@ abstract class AbstractJsonBuilder
         }
     }
 
-    protected static function cleanValue(mixed $value): mixed
+    protected static function cleanValue(mixed $value, self $instance): mixed
     {
         if ($value instanceof self) {
             return $value->toStdClass();
         }
 
         if (is_array($value)) {
-            $value = self::cleanArrayValue($value);
+            $value = self::cleanArrayValue($value, $instance);
         }
 
         if (is_object($value)) {
@@ -87,17 +87,20 @@ abstract class AbstractJsonBuilder
         };
     }
 
-    protected static function cleanArrayValue(array $value): array
+    protected static function cleanArrayValue(array $value, self $instance): array
     {
         $returnArray = [];
 
         foreach ($value as $key => $val) {
+            if ($val === $instance) {
+                throw new InvalidArgumentException('Recursion error: Does not support itself');
+            }
             if (is_array($val)) {
-                $returnArray[$key] = self::cleanArrayValue($val);
+                $returnArray[$key] = self::cleanArrayValue($val, $instance);
                 continue;
             }
 
-            $returnArray[$key] = self::cleanValue($val);
+            $returnArray[$key] = self::cleanValue($val, $instance);
         }
 
         return $returnArray;
