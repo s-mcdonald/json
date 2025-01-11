@@ -36,6 +36,11 @@ final class Json
         return (new ArrayToJsonEncoder())->encode($this->jsonProperties)->getBody();
     }
 
+    public function toUgly(): string
+    {
+        return self::getJsonFormatter()->ugly((new ArrayToJsonEncoder())->encode($this->jsonProperties)->getBody());
+    }
+
     public function addProperty(string $key, mixed $value): self
     {
         $this->jsonProperties[$key] = $value;
